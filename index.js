@@ -1,0 +1,61 @@
+var express = require("express");
+var mongoose = require("mongoose");
+var http = require('http');
+var database = "mongodb://localhost:27017/tuber_dev";
+var io = require('socket.io');
+
+var User = require("./Models/user");
+
+var app = express();
+var port = 4000;
+io = io.listen(http.createServer(app).listen(port));
+
+// db connection
+mongoose.connect(database, function(err, res){
+  if(err){console.log('ERROR connecting to: ' + database + ': ' + err + "in ");}
+
+  else{
+    console.log("Connection to " + database + " successful!" );
+  }
+});
+
+
+User.removeUsers(creation);
+
+
+function creation(){
+	User.create("Tom", "Tom@tom.com", function(user){
+	console.log(user.name +  "found!");
+
+	});
+}
+
+
+
+
+// Router //////
+
+
+app.get("/login", function(req, res){
+	console.log(req.query); 
+	var username = req.query.username;
+	var email = req.query.email;
+
+	User.login(username, email, function(user){
+		if(user){
+			console.log(user);
+		}else{
+			console.log("could not create account");
+		}
+	});
+
+});
+
+app.post("/login", function(req, res){
+	console.log("post hit");
+});
+
+
+
+
+/////////////////

@@ -44,6 +44,7 @@ function creation(){
 
 app.get("/", function(req, res){
 	console.log("hit");
+	res.json(200);
 });
 
 app.get("/login", function(req, res){

@@ -1,10 +1,19 @@
-var mongoose = require('mongoose')
+var mongoose = require('mongoose'),
+	validate = require('mongoose-validator');
+
 var Schema = mongoose.Schema,
 	ObjectId = Schema.Types.ObjectId;
 
+// validatons on object attributes 
+var isEmail = validate({
+                validator: 'isEmail',
+                message: "This is not a valid email address"
+              });
+
+
 var userSchema = new Schema({
 	name: {type:String, required: true},
-	email: {type: String, unique: true, required: true},
+	email: {type: String, unique: true, required: true, validate: isEmail},
 	password: {type: String },
 	studentRating: {type: Number},
 	tutorRating: {type: Number},
@@ -50,7 +59,6 @@ userSchema.statics.login = function(name, email, next){
 }
 
 
-
 userSchema.statics.lookUp = function(name, next){
 	this.findOne({name: name}, function(err, user){
 		if(err){
@@ -73,19 +81,23 @@ userSchema.statics.removeUsers = function(next){
 }
 
 userSchema.methods.updateStudentRating = function(rating, next){
-
+	this.studentRating = rating;
+	this.save();
 }
 
 userSchema.methods.updateTutorRating = function(rating, next){
-	
+	this.tutorRating = rating; 
+	this.save();
 }
 
 userSchema.methods.updateLocation = function(xPos, yPos, next){
-
+	this.location.xPos = xPos;
+	this.location.yPost = yPos; 
+	this.save();
 }
 
 userSchema.methods.updateStudentCourses = function(courses, next){
-
+	
 }
 
 userSchema.methods.updateTutorCourses = function(courses, next){

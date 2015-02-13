@@ -5,8 +5,9 @@ var Schema = mongoose.Schema,
 var userSchema = new Schema({
 	name: {type:String, required: true},
 	email: {type: String, unique: true, required: true},
-	password: { type: String },
-	ratings: {type: Number},
+	password: {type: String },
+	studentRating: {type: Number},
+	tutorRating: {type: Number},
 	location:{
 		xPos: {type:Number}, 
 		yPos:{type:Number}
@@ -49,6 +50,7 @@ userSchema.statics.login = function(name, email, next){
 }
 
 
+
 userSchema.statics.lookUp = function(name, next){
 	this.findOne({name: name}, function(err, user){
 		if(err){
@@ -68,6 +70,30 @@ userSchema.statics.removeUsers = function(next){
 		}
 		next();
 	 });
+}
+
+userSchema.methods.updateStudentRating = function(rating, next){
+
+}
+
+userSchema.methods.updateTutorRating = function(rating, next){
+	
+}
+
+userSchema.methods.updateLocation = function(xPos, yPos, next){
+
+}
+
+userSchema.methods.updateStudentCourses = function(courses, next){
+
+}
+
+userSchema.methods.updateTutorCourses = function(courses, next){
+
+}
+
+userSchema.methods.setApproved = function(){
+	
 }
 
 

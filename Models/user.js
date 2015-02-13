@@ -14,8 +14,8 @@ var userSchema = new Schema({
 	profilePic:{type:String},
 	tutor: {type:Boolean},
 	approved: {type:Boolean, default: false},
-	studentClasses: [String],
-	tutorClasses: [String]
+	studentCourses: [{type: ObjectId, ref: 'Course'}],
+	tutorCourses: [{type: ObjectId, ref: 'Course'}]
 });
 
 

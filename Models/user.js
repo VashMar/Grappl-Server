@@ -12,7 +12,8 @@ var isEmail = validate({
 
 
 var userSchema = new Schema({
-	name: {type:String, required: true},
+	firstName: {type:String},
+	lastName: {type:String},
 	email: {type: String, unique: true, required: true, validate: isEmail},
 	password: {type: String },
 	studentRating: {type: Number},

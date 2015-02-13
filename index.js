@@ -42,9 +42,11 @@ function creation(){
 
 // Router //////
 
+app.get("/", function(req, res){
+	console.log("hit");
+});
 
 app.get("/login", function(req, res){
-	console.log(req.query); 
 	var username = req.query.username;
 	var email = req.query.email;
 
@@ -58,6 +60,12 @@ app.get("/login", function(req, res){
 
 });
 
+
+app.get("/signup", function(req, res){
+
+});
+
+
 app.post("/login", function(req, res){
 	console.log("post hit");
 });
@@ -66,3 +74,10 @@ app.post("/login", function(req, res){
 
 
 /////////////////
+
+
+
+io.on('connection', function (socket) {
+  console.log("Connected to: " + socket);
+  socket.emit('news', { hello: 'world' });
+});

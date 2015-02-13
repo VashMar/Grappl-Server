@@ -1,13 +1,21 @@
 var express = require("express");
 var mongoose = require("mongoose");
 var http = require('http');
-var database = "mongodb://localhost:27017/tuber_dev";
+
+
+var database = process.env.MONGOLAB_URI || 
+               process.env.MONGOHQ_URL  ||
+               "mongodb://localhost:27017/tuber_dev";
+
+
+var port = process.env.PORT || 4000;
+
 var io = require('socket.io');
 
 var User = require("./Models/user");
 
 var app = express();
-var port = 4000;
+
 io = io.listen(http.createServer(app).listen(port));
 
 // db connection

@@ -28,15 +28,14 @@ mongoose.connect(database, function(err, res){
 });
 
 
-User.removeUsers(creation);
+/* User.removeUsers(creation);
 
 
 function creation(){
 	User.create("Tom", "Tom@tom.com", function(user){
 	console.log(user.name +  "found!");
-
 	});
-}
+} */
 
 
 

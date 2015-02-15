@@ -9,12 +9,14 @@ var database = process.env.MONGOLAB_URI ||
 
 
 var port = process.env.PORT || 4000;
-
 var io = require('socket.io');
+var app = express();
 
+//models
 var User = require("./Models/user");
 
-var app = express();
+//controllers
+var Account = require("./Controllers/account");
 
 io = io.listen(http.createServer(app).listen(port));
 
@@ -47,6 +49,7 @@ app.get("/", function(req, res){
 	res.json(200);
 });
 
+
 app.get("/login", function(req, res){
 	var username = req.query.username;
 	var email = req.query.email;
@@ -61,8 +64,15 @@ app.get("/login", function(req, res){
 
 });
 
+app.get('/signup', Account.signup);
 
 app.get("/signup", function(req, res){
+	var first = req.query.first;
+	var last = req.query.last; 
+	var email = req.query.email;
+	var pass = req.query.password;
+
+
 
 });
 
@@ -79,6 +89,7 @@ app.post("/login", function(req, res){
 
 
 io.on('connection', function (socket) {
-  console.log("Connected to: " + socket);
-  socket.emit('news', { hello: 'world' });
+  console.log("Connected to: " + JSON.stringify(socket));
+
+  socket.emit('hello', { hello: 'world' });
 });

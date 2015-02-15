@@ -96,5 +96,6 @@ io.on('connection', function (socket) {
   socket.on('Login', function(data){
   	console.log("Login data: " + data);
   	console.log(JSON.stringify(data));
+  	socket.emit('Hello', { hello: 'world' });
   })
 });

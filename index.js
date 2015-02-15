@@ -64,7 +64,7 @@ app.get("/login", function(req, res){
 
 });
 
-app.get('/signup', Account.signup);
+//app.get('/signup', Account.signup);
 
 app.get("/signup", function(req, res){
 	var first = req.query.first;

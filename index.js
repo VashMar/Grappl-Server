@@ -71,9 +71,6 @@ app.get("/signup", function(req, res){
 	var last = req.query.last; 
 	var email = req.query.email;
 	var pass = req.query.password;
-
-
-
 });
 
 
@@ -96,6 +93,7 @@ io.on('connection', function (socket) {
   socket.on('Login', function(data){
   	console.log("Login data: " + data);
   	console.log(JSON.stringify(data));
+  	console.log("Responding with hello..");
   	socket.emit('Hello', { hello: 'world' });
   })
 });

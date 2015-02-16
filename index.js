@@ -51,6 +51,7 @@ app.get("/", function(req, res){
 
 
 app.get("/login", function(req, res){
+	console.log("Login hit");
 	var username = req.query.username;
 	var email = req.query.email;
 
@@ -71,6 +72,7 @@ app.get("/signup", function(req, res){
 	var last = req.query.last; 
 	var email = req.query.email;
 	var pass = req.query.password;
+
 });
 
 

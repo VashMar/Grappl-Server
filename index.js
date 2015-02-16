@@ -88,8 +88,6 @@ app.post("/login", function(req, res){
 io.on('connection', function (socket) {
   console.log("Connected to: " + socket.id);
 
-  socket.emit('Hello', { hello: 'world' });
-
   socket.on('Login', function(data){
   	console.log("Login data: " + data);
   	console.log(JSON.stringify(data));

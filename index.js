@@ -77,7 +77,7 @@ app.get("/signup", function(req, res){
 
 
 app.post("/login", function(req, res){
-	console.log("post hit");
+	console.log("LOGIN POST IS HIT" );
 });
 
 
@@ -95,5 +95,6 @@ io.on('connection', function (socket) {
   	console.log(JSON.stringify(data));
   	console.log("Responding with hello..");
   	socket.emit('Hello', { hello: 'world' });
-  })
+  });
+
 });

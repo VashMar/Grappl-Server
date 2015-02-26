@@ -12,6 +12,7 @@
     "express": "^4.11.2",
     "jsonwebtoken": "^3.2.2",
     "mongoose": "^3.8.23",
-    "mongoose-validator": "^1.0.3"
+    "mongoose-validator": "^1.0.3",
+    "socketio-jwt": "^2.3.5"
   }
 }

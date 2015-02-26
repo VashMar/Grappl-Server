@@ -2,7 +2,7 @@ var express = require("express");
 var mongoose = require("mongoose");
 var http = require('http');
 var jwt = require('jsonwebtoken');
-
+var socketioJwt = require('socketio-jwt');
 
 var database = process.env.MONGOLAB_URI || 
                process.env.MONGOHQ_URL  ||

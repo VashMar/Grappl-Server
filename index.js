@@ -1,6 +1,7 @@
 var express = require("express");
 var mongoose = require("mongoose");
 var http = require('http');
+var jwt = require('jsonwebtoken');
 
 
 var database = process.env.MONGOLAB_URI || 
@@ -73,10 +74,16 @@ app.get("/signup", function(req, res){
 	var email = req.query.email;
 	var pass = req.query.password;
 
+	User.create(first, last, email, pass, function(user){
+		// we are sending the profile in the token
+		var token = jwt.sign(user, 't3stk3y');
+	  	res.json({token: token});
+	});
 });
 
 
 app.post("/login", function(req, res){
+	res.json(200);
 	console.log("LOGIN POST IS HIT" );
 });
 
@@ -85,6 +92,10 @@ app.post("/login", function(req, res){
 
 /////////////////
 
+io.set('authorization', socketioJwt.authorize({
+  secret: 't3stk3y',
+  handshake: true
+}));
 
 
 io.on('connection', function (socket) {

@@ -26,13 +26,36 @@ var userSchema = new Schema({
 	tutor: {type:Boolean},
 	approved: {type:Boolean, default: false},
 	studentCourses: [{type: ObjectId, ref: 'Course'}],
-	tutorCourses: [{type: ObjectId, ref: 'Course'}]
+	tutorCourses: [{type: ObjectId, ref: 'Course'}],
+	sessionToken: [{type: String}]
+});
+
+
+userSchema.pre('save', function(next) {
+    var user = this;
+ 
+    // only hash the password if it has been modified (or is new)
+    if (!user.isModified('password')) return next();
+
+    // generate a salt
+    bcrypt.genSalt(SALT_WORK_FACTOR, function(err, salt){
+        if (err) return next(err);
+
+        // hash the password along with our new salt
+        bcrypt.hash(user.password, salt, function(err, hash) {
+            if (err) return next(err);
+
+            // override the cleartext password with the hashed one
+            user.password = hash;
+            next();
+        });
+    });
 });
 
 
 
-userSchema.statics.create = function(name, email, next){
-	var user = new User({name: name, email: email});
+userSchema.statics.create = function(first, last, email, password, next){
+	var user = new User({firstName:first,lastName:last,email:email,password:password});
 	user.save(function(err, user){
 		if(err){
 			console.log(err);

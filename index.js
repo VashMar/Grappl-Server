@@ -63,9 +63,11 @@ app.get("/login", function(req, res){
 			// we are sending the profile in the token
 			var token = jwt.sign(user, 't3stk3y');
 		  	res.json({token: token});
+		}else{
+			// user doesn't have an account
+			res.json(400);
 		}
 	});
-
 });
 
 

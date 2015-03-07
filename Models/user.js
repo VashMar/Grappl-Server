@@ -56,26 +56,21 @@ userSchema.pre('save', function(next){
 
 userSchema.statics.create = function(first, last, email, password, next){
 	var user = new User({firstName:first,lastName:last,email:email,password:password});
-	// user.save(function(err, user, next){
-	// 	if(err){
-	// 		next(err);
-	// 	}else if(user){
-	// 		next("", user);
-	// 	}
-	// });
+	user.save(function(err, user, next){
+		if(err){
+			next(err);
+		}else if(user){
+			next("", user);
+		}
+	});
 }
 
 userSchema.statics.login = function(name, email, next){
 	var User = this;
 
-	 User.findOne({email:email}, function(err, user, next){
+	 User.findOne({email:email}, function(err, user){
 	 	if(err){
 	 		next(err);
-	 	}else if(!user){
-	 		// create the user
-	 		User.create(name, email, function(user){
-	 			next("", user);
-	 		}); 
 	 	}else{
 	 		next("", user);
 	 	}

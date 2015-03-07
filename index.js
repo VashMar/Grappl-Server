@@ -41,8 +41,6 @@ function creation(){
 } */
 
 
-
-
 // Router //////
 
 app.get("/", function(req, res){
@@ -56,37 +54,40 @@ app.get("/login", function(req, res){
 	var username = req.query.username;
 	var email = req.query.email;
 
-	User.login(username, email, function(user){
-		if(user){
-			console.log(user);
-		}else{
-			console.log("could not create account");
+
+
+	User.login(username, email, function(err, user){
+		if(err){
+			res.json(500);
+		}else if(user){
+			// we are sending the profile in the token
+			var token = jwt.sign(user, 't3stk3y');
+		  	res.json({token: token});
 		}
 	});
 
 });
 
-//app.get('/signup', Account.signup);
 
-app.get("/signup", function(req, res){
+app.post("/signup", function(req, res){
+	// take in credentials 
 	var first = req.query.first;
 	var last = req.query.last; 
 	var email = req.query.email;
 	var pass = req.query.password;
 
-	User.create(first, last, email, pass, function(user){
-		// we are sending the profile in the token
-		var token = jwt.sign(user, 't3stk3y');
-	  	res.json({token: token});
+
+	// try to create an account 
+	User.create(first, last, email, pass, function(err, user){
+		if(err){
+			res.json(500);
+		}else if(user){
+			// we are sending the profile in the token
+			var token = jwt.sign(user, 't3stk3y');
+		  	res.json({token: token});
+		}
 	});
 });
-
-
-app.post("/login", function(req, res){
-	res.json(200);
-	console.log("LOGIN POST IS HIT" );
-});
-
 
 
 

@@ -59,8 +59,9 @@ userSchema.statics.create = function(first, last, email, password, next){
 	user.save(function(err, user){
 		if(err){
 			console.log(err);
+			next(err);
 		}else if(user){
-			next(user);
+			next("", user);
 		}
 	});
 }
@@ -69,14 +70,14 @@ userSchema.statics.login = function(name, email, next){
 	var User = this;
 	 User.findOne({email:email}, function(err, user){
 	 	if(err){
-	 		console.log(err);
+	 		next(err);
 	 	}else if(!user){
 	 		// create the user
 	 		User.create(name, email, function(user){
-	 			next(user);
+	 			next("", user);
 	 		}); 
 	 	}else{
-	 		next(user);
+	 		next("", user);
 	 	}
 	 });
 

@@ -8,7 +8,7 @@ var courseSchema = new Schema({
 	tutors: {type: ObjectId, ref: 'User'}
 });
 
-
+ 
 
 Course = mongoose.model('Course', courseSchema);
 module.exports = Course;

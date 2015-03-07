@@ -55,7 +55,6 @@ app.get("/login", function(req, res){
 	var email = req.query.email;
 
 
-
 	User.login(username, email, function(err, user){
 		if(err){
 			console.log(err);

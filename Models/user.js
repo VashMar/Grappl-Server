@@ -67,6 +67,11 @@ userSchema.statics.create = function(first, last, email, password, next){
 
 userSchema.statics.login = function(name, email, next){
 	var User = this;
+	if(typeof(next) == "function"){
+		console.log('next function recognized');
+	}
+
+	
 	 User.findOne({email:email}, function(err, user){
 	 	if(err){
 	 		next(err);

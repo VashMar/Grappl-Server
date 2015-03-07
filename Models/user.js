@@ -67,23 +67,21 @@ userSchema.statics.create = function(first, last, email, password, next){
 
 userSchema.statics.login = function(name, email, next){
 	var User = this;
-	if(typeof(next) == "function"){
-		console.log('next function recognized');
-	}
 
-	
-	 User.findOne({email:email}, function(err, user){
-	 	if(err){
-	 		next(err);
-	 	}else if(!user){
-	 		// create the user
-	 		User.create(name, email, function(user){
-	 			next("", user);
-	 		}); 
-	 	}else{
-	 		next("", user);
-	 	}
-	 });
+	next("asdasdsa");
+
+	 // User.findOne({email:email}, function(err, user){
+	 // 	if(err){
+	 // 		next(err);
+	 // 	}else if(!user){
+	 // 		// create the user
+	 // 		User.create(name, email, function(user){
+	 // 			next("", user);
+	 // 		}); 
+	 // 	}else{
+	 // 		next("", user);
+	 // 	}
+	 // });
 
 }
 

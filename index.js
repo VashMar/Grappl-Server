@@ -20,7 +20,7 @@ var User = require("./Models/user");
 var Account = require("./Controllers/account");
 
 //helpers
-var errHandle = require("./Helpers/errorHandle");
+var errHandle = require("./Helpers/errorHandler");
 
 io = io.listen(http.createServer(app).listen(port));
 

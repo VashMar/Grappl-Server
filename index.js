@@ -34,16 +34,6 @@ mongoose.connect(database, function(err, res){
 });
 
 
-/* User.removeUsers(creation);
-
-
-function creation(){
-	User.create("Tom", "Tom@tom.com", function(user){
-	console.log(user.name +  "found!");
-	});
-} */
-
-
 // Router //////
 
 app.get("/", function(req, res){
@@ -58,7 +48,7 @@ app.get("/login", function(req, res){
 	var email = req.query.email;
 
 
-	User.login(email, password, function(err, user){
+	User.login(email, pass, function(err, user){
 		if(err){
 			errHandle.loginErrors(res, err);
 		}else if(user){

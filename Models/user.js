@@ -68,20 +68,18 @@ userSchema.statics.create = function(first, last, email, password, next){
 userSchema.statics.login = function(name, email, next){
 	var User = this;
 
-	next("asdasdsa");
-
-	 // User.findOne({email:email}, function(err, user){
-	 // 	if(err){
-	 // 		next(err);
-	 // 	}else if(!user){
-	 // 		// create the user
-	 // 		User.create(name, email, function(user){
-	 // 			next("", user);
-	 // 		}); 
-	 // 	}else{
-	 // 		next("", user);
-	 // 	}
-	 // });
+	 User.findOne({email:email}, function(err, user, next){
+	 	if(err){
+	 		next(err);
+	 	}else if(!user){
+	 		// create the user
+	 		User.create(name, email, function(user){
+	 			next("", user);
+	 		}); 
+	 	}else{
+	 		next("", user);
+	 	}
+	 });
 
 }
 

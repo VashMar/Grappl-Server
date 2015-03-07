@@ -58,6 +58,7 @@ app.get("/login", function(req, res){
 
 	User.login(username, email, function(err, user){
 		if(err){
+			console.log(err);
 			res.json(500);
 		}else if(user){
 			// we are sending the profile in the token

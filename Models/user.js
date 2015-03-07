@@ -31,7 +31,7 @@ var userSchema = new Schema({
 });
 
 
-userSchema.pre('save', function(next) {
+userSchema.pre('save', function(next){
     var user = this;
  
     // only hash the password if it has been modified (or is new)
@@ -58,7 +58,6 @@ userSchema.statics.create = function(first, last, email, password, next){
 	var user = new User({firstName:first,lastName:last,email:email,password:password});
 	user.save(function(err, user){
 		if(err){
-			console.log(err);
 			next(err);
 		}else if(user){
 			next("", user);

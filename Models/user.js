@@ -1,5 +1,8 @@
 var mongoose = require('mongoose'),
-	validate = require('mongoose-validator');
+    validate = require('mongoose-validator'),
+	bcrypt 	 = require('bcrypt'),
+	SALT_WORK_FACTOR = 9;
+  
 
 var Schema = mongoose.Schema,
 	ObjectId = Schema.Types.ObjectId;
@@ -54,6 +57,9 @@ userSchema.pre('save', function(next){
 
 
 
+
+
+
 userSchema.statics.create = function(first, last, email, password, next){
 	var user = new User({firstName:first,lastName:last,email:email,password:password});
 	user.save(function(err, user, next){
@@ -65,17 +71,27 @@ userSchema.statics.create = function(first, last, email, password, next){
 	});
 }
 
-userSchema.statics.login = function(name, email, next){
+userSchema.statics.login = function(email, password, next){
 	var User = this;
 
 	 User.findOne({email:email}, function(err, user){
+	 	var loginErr = {status: 400, message: "The email or password you entered is incorrect"};
 	 	if(err){
-	 		next(err);
+	 		return next(err);
+	 	}else if(user){
+	 		 //authorize 
+      		user.comparePassword(password, function(err, isMatch){
+		        if(!isMatch || err){ 
+		  		  if(err){ return next(err);}
+		  		  return next(loginErr);
+		        }else{
+		          return next("", user); // return the user
+		        }
+	      	});
 	 	}else{
-	 		next("", user);
+	 		next(loginErr); // no user found 
 	 	}
 	 });
-
 }
 
 
@@ -99,6 +115,17 @@ userSchema.statics.removeUsers = function(next){
 		next();
 	 });
 }
+
+
+// compares user submitted pass to saved salted one
+userSchema.methods.comparePassword = function(sentPassword, callback) {
+    bcrypt.compare(sentPassword, this.password, function(err, isMatch){
+        if (err) return cb(err);
+        callback(null, isMatch);
+    });
+};
+
+
 
 userSchema.methods.updateStudentRating = function(rating, next){
 	this.studentRating = rating;

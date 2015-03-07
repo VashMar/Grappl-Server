@@ -19,6 +19,9 @@ var User = require("./Models/user");
 //controllers
 var Account = require("./Controllers/account");
 
+//helpers
+var errHandle = require("./Helpers/errorHandle.js");
+
 io = io.listen(http.createServer(app).listen(port));
 
 // db connection
@@ -51,20 +54,17 @@ app.get("/", function(req, res){
 
 app.get("/login", function(req, res){
 	console.log("Login hit");
-	var username = req.query.username;
+	var pass = req.query.password;
 	var email = req.query.email;
 
 
-	User.login(username, email, function(err, user){
+	User.login(email, password, function(err, user){
 		if(err){
-			res.json(500);
+			errHandle.loginErrors(res, err);
 		}else if(user){
 			// we are sending the profile in the token
 			var token = jwt.sign(user, 't3stk3y');
 		  	res.json({token: token});
-		}else{
-			// user doesn't have an account
-			res.json(400);
 		}
 	});
 });
@@ -81,7 +81,7 @@ app.post("/signup", function(req, res){
 	// try to create an account 
 	User.create(first, last, email, pass, function(err, user){
 		if(err){
-			res.json(500);
+			errHandle.signupErrors(err);
 		}else if(user){
 			// we are sending the profile in the token
 			var token = jwt.sign(user, 't3stk3y');

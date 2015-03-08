@@ -45,7 +45,7 @@ userSchema.pre('save', function(next){
         if (err) return next(err);
 
         // hash the password along with our new salt
-        bcrypt.hash(user.password, salt, function(err, hash) {
+        bcrypt.hash(user.password, salt, function(err, hash){
             if (err) return next(err);
 
             // override the cleartext password with the hashed one
@@ -139,7 +139,7 @@ userSchema.methods.updateTutorRating = function(rating, next){
 
 userSchema.methods.updateLocation = function(xPos, yPos, next){
 	this.location.xPos = xPos;
-	this.location.yPost = yPos; 
+	this.location.yPos = yPos; 
 	this.save();
 }
 

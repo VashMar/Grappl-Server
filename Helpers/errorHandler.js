@@ -6,3 +6,9 @@ exports.loginErrors = function(res,err){
 		res.json(500);
 	}
 }
+
+
+
+exports.signupErrors = function(res,err){
+	console.log(err);
+}

@@ -67,6 +67,8 @@ app.post("/signup", function(req, res){
 	var email = req.query.email;
 	var pass = req.query.password;
 
+	console.log("Email is: " + email);
+
 
 	// try to create an account 
 	User.create(first, last, email, pass, function(err, user){

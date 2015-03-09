@@ -61,7 +61,6 @@ userSchema.pre('save', function(next){
 
 
 userSchema.statics.create = function(first, last, email, password, next){
-	console.log("Email is: " + email);
 	var user = new User({firstName:first, lastName:last, email:email, password:password});
 	user.save(function(err, user){
 		console.log("Saving new user..");

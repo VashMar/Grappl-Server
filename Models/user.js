@@ -62,7 +62,7 @@ userSchema.pre('save', function(next){
 
 userSchema.statics.create = function(first, last, email, password, next){
 	var user = new User({firstName:first,lastName:last,email:email,password:password});
-	user.save(function(err, user, next){
+	user.save(function(err, user){
 		if(err){
 			next(err);
 		}else if(user){
@@ -80,7 +80,7 @@ userSchema.statics.login = function(email, password, next){
 	 		return next(err);
 	 	}else if(user){
 	 		 //authorize 
-      		user.comparePassword(password, function(err, isMatch){
+	  		user.comparePassword(password, function(err, isMatch){
 		        if(!isMatch || err){ 
 		  		  if(err){ return next(err);}
 		  		  return next(loginErr);

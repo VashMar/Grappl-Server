@@ -102,7 +102,7 @@ io.set('authorization', socketioJwt.authorize({
 
 io.on('connection', function (socket) {
   console.log("Connected to: " + socket.id);
-  console.log("User: " + socket.handshake.decoded_token);
+  console.log("User: " + socket.handshake);
 
   socket.on('Login', function(data){
   	console.log("Login data: " + data);

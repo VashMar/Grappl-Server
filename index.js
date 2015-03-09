@@ -67,6 +67,7 @@ app.post("/signup", function(req, res){
 	var email = req.query.email;
 	var pass = req.query.password;
 
+	console.log(req.query.email);
 	console.log("Email is: " + email);
 
 

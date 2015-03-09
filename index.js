@@ -12,6 +12,8 @@ var database = process.env.MONGOLAB_URI ||
 var port = process.env.PORT || 4000;
 var io = require('socket.io');
 var app = express();
+var bodyParser = require('body-parser');
+var multer = require('multer'); 
 
 //models
 var User = require("./Models/user");
@@ -22,9 +24,10 @@ var Account = require("./Controllers/account");
 //helpers
 var errHandle = require("./Helpers/errorHandler");
 
+// set up socket listener 
 io = io.listen(http.createServer(app).listen(port));
 
-// db connection
+// establish db connection
 mongoose.connect(database, function(err, res){
   if(err){console.log('ERROR connecting to: ' + database + ': ' + err + "in ");}
 
@@ -32,6 +35,14 @@ mongoose.connect(database, function(err, res){
     console.log("Connection to " + database + " successful!" );
   }
 });
+
+
+// configure express middleware 
+app.use(bodyParser.json()); // for parsing application/json
+app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
+app.use(multer()); // for parsing multipart/form-data
+
+
 
 
 // Router //////

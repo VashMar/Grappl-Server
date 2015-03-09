@@ -73,13 +73,10 @@ app.get("/login", function(req, res){
 
 app.post("/signup", function(req, res){
 	// take in credentials 
-	var first = req.query.first;
-	var last = req.query.last; 
-	var email = req.query.email;
-	var pass = req.query.password;
-
-	console.log("Email is" + req.body.email);
-
+	var first = req.body.first;
+	var last = req.body.last; 
+	var email = req.body.email;
+	var pass = req.body.password;
 
 	// try to create an account 
 	User.create(first, last, email, pass, function(err, user){

@@ -59,7 +59,7 @@ userSchema.pre('save', function(next){
 userSchema.statics.create = function(first, last, email, password, next){
 	var user = new User({firstName:first, lastName:last, email:email, password:password});
 	user.save(function(err, user){
-		console.log("Saving new user: " + firstName + " " + lastName + " (" + email + ")");
+		console.log("Saving new user: " + first+ " " + last + " (" + email + ")");
 		if(err){
 			next(err);
 		}else if(user){

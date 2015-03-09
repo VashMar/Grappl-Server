@@ -71,6 +71,7 @@ app.post("/signup", function(req, res){
 	// try to create an account 
 	User.create(first, last, email, pass, function(err, user){
 		if(err){
+			console.log(err);
 			errHandle.signupErrors(err);
 		}else if(user){
 			// we are sending the profile in the token

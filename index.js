@@ -99,7 +99,7 @@ app.post("/signup", function(req, res){
 
 
 io.use(socketioJwt.authorize({
-  secret: 'your secret or public key',
+  secret: jwtSecret,
   handshake: true
 }));
 

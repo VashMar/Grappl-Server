@@ -26,7 +26,7 @@ var userSchema = new Schema({
 		yPos:{type:Number}
 	},
 	profilePic:{type:String},
-	tutor: {type:Boolean},
+	tutor: {type:Boolean, index: true},
 	approved: {type:Boolean, default: false},
 	studentCourses: [{type: ObjectId, ref: 'Course'}],
 	tutorCourses: [{type: ObjectId, ref: 'Course'}],

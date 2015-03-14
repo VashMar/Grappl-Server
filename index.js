@@ -64,11 +64,13 @@ app.get("/login", function(req, res){
 			errHandle.loginErrors(res, err);
 		}else if(user){
 			// we are sending the profile in the token
-			var token = jwt.sign(user, 't3stk3y');
+			var token = jwt.sign(user, jwtSecret);
 		  	res.json({token: token});
 		}
 	});
 });
+
+var jwtSecret = "t3stk3y";
 
 
 app.post("/signup", function(req, res){
@@ -84,7 +86,7 @@ app.post("/signup", function(req, res){
 			errHandle.signupErrors(res, err);
 		}else if(user){
 			// we are sending the profile in the token
-			var token = jwt.sign(user, 't3stk3y');
+			var token = jwt.sign(user, jwtSecret);
 		  	res.json({token: token});
 		}
 	});
@@ -95,20 +97,20 @@ app.post("/signup", function(req, res){
 /////////////////
 
 io.set('authorization', socketioJwt.authorize({
-  secret: 't3stk3y',
+  secret: jwtSecret,
   handshake: true
 }));
 
 
+
+
 io.on('connection', function (socket) {
   console.log("Connected to: " + socket.id);
-  console.log("User: " + JSON.stringify(socket.handshake));
+  console.log("User: " + JSON.stringify(socket.decoded_token));
 
-  socket.on('Login', function(data){
-  	console.log("Login data: " + data);
-  	console.log(JSON.stringify(data));
-  	console.log("Responding with hello..");
-  	socket.emit('Hello', { hello: 'world' });
+  socket.on('grappleTutors', function(data){
+  	console.log(data);
+
   });
 
 });

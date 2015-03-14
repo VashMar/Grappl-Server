@@ -48,7 +48,6 @@ app.use(multer()); // for parsing multipart/form-data
 // Router //////
 
 app.get("/", function(req, res){
-	console.log("hit");
 	res.json(200);
 });
 

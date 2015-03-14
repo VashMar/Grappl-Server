@@ -104,11 +104,12 @@ io.set('authorization', socketioJwt.authorize({
 
 
 
-io.on('connection', function (socket) {
+io.on('connection', function (socket){
   console.log("Connected to: " + socket.id);
-  console.log("User: " + JSON.stringify(socket.decoded_token));
+  console.log("User: " + JSON.stringify(socket.decoded_token.name));
 
-  socket.on('grappleTutors', function(data){
+  // returns tutors 
+  socket.on('grapple', function(data){
   	console.log(data);
 
   });

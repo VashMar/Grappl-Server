@@ -97,16 +97,15 @@ app.post("/signup", function(req, res){
 
 
 
-// io.use(socketioJwt.authorize({
-//   secret: jwtSecret,
-//   handshake: true
-// }));
+io.use(socketioJwt.authorize({
+  secret: jwtSecret,
+  handshake: true
+}));
 
 
 
 io.on('connection', function (socket){
   console.log("Connected to: " + socket.id);
-  console.log('hello! ', socket.decoded_token.name);
 
   // returns tutors 
   socket.on('grapple', function(data){

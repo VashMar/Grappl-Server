@@ -96,7 +96,6 @@ app.post("/signup", function(req, res){
 /////////////////
 
 
-
 io.use(socketioJwt.authorize({
   secret: jwtSecret,
   handshake: true
@@ -106,10 +105,11 @@ io.use(socketioJwt.authorize({
 
 io.on('connection', function (socket){
   console.log("Connected to: " + socket.id);
+  console.log("Token: " + socket.decoded_token.name);
 
   // returns tutors 
   socket.on('grapple', function(data){
   	console.log(data);
   });
-  
+
 });

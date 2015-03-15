@@ -105,7 +105,7 @@ io.use(socketioJwt.authorize({
 
 io.on('connection', function (socket){
   console.log("Connected to: " + socket.id);
-  console.log("Token: " + socket.decoded_token.name);
+  console.log("Token: " + socket.decoded_token);
 
   // returns tutors 
   socket.on('grapple', function(data){

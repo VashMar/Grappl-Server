@@ -17,6 +17,7 @@ var multer = require('multer');
 
 //models
 var User = require("./Models/user");
+var Course = require("./Models/course");
 
 //controllers
 var Account = require("./Controllers/account");
@@ -93,7 +94,25 @@ app.post("/signup", function(req, res){
 
 
 
-/////////////////
+///////////////////////////////////////////////////////////////////////////////////////////
+
+// create a map to store available tutors in each course (eventually implement redis cache)
+var availableTutors = {};
+
+Course.getAll(function(courses){
+	courses.forEach(function(course){
+		availableTutors[course.name] = [];
+		for(var i =0; i < course.tutors.length; i++){
+			var tutor = course.tutors[i];
+			if(tutor.tutorSession.available){
+				availableTutors[course.name].push(tutor); // add the tutor if they are available
+			}
+		}
+	});
+});
+
+
+////////////////////////////////////////////////////////////////////////////////////////////
 
 
 io.use(socketioJwt.authorize({
@@ -107,9 +126,15 @@ io.on('connection', function (socket){
   console.log("Connected to: " + socket.id);
   console.log("Token: " + socket.decoded_token);
 
-  // returns tutors 
+
+  // returns tutors for a given course
   socket.on('grapple', function(data){
-  	console.log(data);
+  	socket.emit('tutorsAvailable', availableTutors[data.course]);
+  });
+
+  // sets places a tutor as available to tutor a class 
+  socket.on('setAvailable', function(data){
+  	
   });
 
 });

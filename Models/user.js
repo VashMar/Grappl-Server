@@ -18,7 +18,7 @@ var userSchema = new Schema({
 	firstName: {type:String},
 	lastName: {type:String},
 	email: {type: String, unique: true, required: true, validate: isEmail},
-	password: {type: String },
+	password: {type: String},
 	studentRating: {type: Number},
 	tutorRating: {type: Number},
 	location:{
@@ -26,11 +26,18 @@ var userSchema = new Schema({
 		yPos:{type:Number}
 	},
 	profilePic:{type:String},
-	tutor: {type:Boolean, index: true},
+	tutor: {type:Boolean},
 	approved: {type:Boolean, default: false},
 	studentCourses: [{type: ObjectId, ref: 'Course'}],
 	tutorCourses: [{type: ObjectId, ref: 'Course'}],
-	sessionToken: [{type: String}]
+	sessionToken: [{type: String}],
+	tutorSession: {			// the information the tutor will set per broadcasted session
+		available: {type: Boolean, default: false},
+		price: {type: Number},
+		travelDistance: {type: Number},
+		minLength: {type: Number},   // minimum length of session in minutes
+		period: {type: Number}	// availibility period in minutes 
+	} 
 });
 
 
@@ -115,7 +122,7 @@ userSchema.statics.removeUsers = function(next){
 
 
 // compares user submitted pass to saved salted one
-userSchema.methods.comparePassword = function(sentPassword, callback) {
+userSchema.methods.comparePassword = function(sentPassword, callback){
     bcrypt.compare(sentPassword, this.password, function(err, isMatch){
         if (err) return cb(err);
         callback(null, isMatch);

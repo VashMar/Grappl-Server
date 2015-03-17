@@ -8,18 +8,6 @@ var courseSchema = new Schema({
 	tutors: [{type: ObjectId, ref: 'User'}]
 });
 
-// courseSchema.methods.findTutors = function(class){
-// 	this.find({name: class}, function(err,course){
-// 		if(course){
-// 			var tutors = course.tutors;
-
-// 		}else if(err){
-
-// 		}
-// 	});
-// }
- 
-
 courseSchema.statics.getAll = function(next){
 	this.find({}).populate('tutors').exec(function(err, courses){
 		if(err){

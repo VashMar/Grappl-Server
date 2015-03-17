@@ -30,7 +30,7 @@ var userSchema = new Schema({
 	approved: {type:Boolean, default: false},
 	studentCourses: [{type: ObjectId, ref: 'Course'}],
 	tutorCourses: [{type: ObjectId, ref: 'Course'}],
-	sessionToken: [{type: String}],
+	messages: {type: ObjectId, ref: 'Message'},
 	tutorSession: {			// the information the tutor will set per broadcasted session
 		available: {type: Boolean, default: false},
 		price: {type: Number},

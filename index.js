@@ -124,17 +124,22 @@ io.use(socketioJwt.authorize({
 
 io.on('connection', function (socket){
   console.log("Connected to: " + socket.id);
-  console.log("Token: " + socket.decoded_token);
+  console.log("Token: " + JSON.stringify(socket.decoded_token));
 
+  // the user for this socket connection 
+  var currentUser;
 
   // returns tutors for a given course
   socket.on('grapple', function(data){
   	socket.emit('tutorsAvailable', availableTutors[data.course]);
   });
 
-  // sets places a tutor as available to tutor a class 
+  // sets a tutor as available to tutor a class 
   socket.on('setAvailable', function(data){
-  	
+  	if(currentUser.tutor && currentUser.approved){
+  		availableTutors[data.course].push(currentUser);
+  	}
   });
+
 
 });

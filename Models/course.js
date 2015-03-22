@@ -5,7 +5,8 @@ var Schema = mongoose.Schema,
 
 var courseSchema = new Schema({
 	name: {type:String, required: true},
-	tutors: [{type: ObjectId, ref: 'User'}]
+	tutors: [{type: ObjectId, ref: 'User'}],
+	tags: {type:String}
 });
 
 courseSchema.statics.getAll = function(next){

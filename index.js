@@ -131,6 +131,7 @@ io.on('connection', function (socket){
 
   // returns tutors for a given course
   socket.on('grapple', function(data){
+  	console.log("Grappling");
   	socket.emit('tutorsAvailable', availableTutors[data.course]);
   });
 

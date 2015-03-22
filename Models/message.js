@@ -2,7 +2,7 @@ var mongoose = require('mongoose')
 var Schema = mongoose.Schema,
 	ObjectId = Schema.Types.ObjectId;
 
-var courseSchema = new Schema({
+var messageSchema = new Schema({
 	recipient: {type: ObjectId, ref: 'User'},
 	sender: {type: ObjectId, ref: 'User'},
 	content: {type: String}

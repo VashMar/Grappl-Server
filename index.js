@@ -115,16 +115,16 @@ Course.getAll(function(courses){
 ////////////////////////////////////////////////////////////////////////////////////////////
 
 
-io.use(socketioJwt.authorize({
-  secret: jwtSecret,
-  handshake: true
-}));
+// io.use(socketioJwt.authorize({
+//   secret: jwtSecret,
+//   handshake: true
+// }));
 
 
 
 io.on('connection', function (socket){
   console.log("Connected to: " + socket.id);
-  console.log("Token: " + JSON.stringify(socket.decoded_token));
+  // console.log("Token: " + JSON.stringify(socket.decoded_token));
 
   // the user for this socket connection 
   var currentUser;

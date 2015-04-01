@@ -33,10 +33,10 @@ var userSchema = new Schema({
 	messages: {type: ObjectId, ref: 'Message'},
 	tutorSession:{			// the information the tutor will set per broadcasted session
 		available: {type: Boolean, default: false},
-		price: {type: Number},
+		price: {type: Number, default: 15},
 		travelDistance: {type: Number},
-		minLength: {type: Number},   // minimum length of session in minutes
-		period: {type: Number}	// availibility period in minutes 
+		minLength: {type: Number, default: 30},   // minimum length of session in minutes
+		period: {type: Number, default: 45}	// availibility period in minutes 
 	} 
 });
 
@@ -129,6 +129,24 @@ userSchema.methods.comparePassword = function(sentPassword, callback){
     });
 };
 
+
+// returns a hash for client with distance and other relevant tutor information 
+userSchema.methods.clientTutorData = function(distance, next){
+	var tutorData = {};
+
+	tutorData.id = this.id;          
+	tutorData.firstName = this.firstName;
+	tutorData.lastName = this.lastName;
+	tutorData.session = this.tutorSession;
+	tutorData.rating = this.rating;
+	tutorData.location = this.location;
+	tutorData.profilePic = this.profilePic;
+	tutorData.id = this.id; 
+	tutorData.distance = distance;             // distance from client 
+
+
+	next(tutorData);
+}
 
 
 userSchema.methods.updateStudentRating = function(rating, next){

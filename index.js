@@ -32,7 +32,7 @@ io = io.listen(http.createServer(app).listen(port));
 
 // establish db connection
 mongoose.connect(database, function(err, res){
-  if(err){console.log('ERROR connecting to: ' + database + ': ' + err + "in ");}
+  if(err){console.log('ERROR connecting to: ' + database + ': ' + err );}
   else{ console.log("Connection to " + database + " successful!" ); }
 });
 
@@ -111,12 +111,11 @@ app.get('/tutors', function(req, res){
 		console.log("Tutor Location: (" + tutorLat + "," + tutorLon + ")");
 
 		getDistance(reqLat, reqLon, tutorLat, tutorLon, function(distance){
-			// show all tutors within 2 miles 
-			if(distance < 2){
-				nearbyTutors.push(tutor);
-			}
-
-			callback();
+			// return relevant tutor data
+			tutor.clientTutorData(distance, function(tutorData){
+				nearbyTutors.push(tutorData);
+				callback();
+			});
 		});
 
 

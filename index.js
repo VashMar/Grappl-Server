@@ -91,10 +91,13 @@ app.post("/signup", function(req, res){
 
 // return nearby available tutors
 app.get('/tutors', function(req, res){
+
 	var course = req.query.course;
 	// coordinates of the requester 
-	var reqLat = req.query.locX;
-	var reqLon = req.query.locY;
+	var reqLat = req.query.lat;
+	var reqLon = req.query.lon;
+
+	console.log("Getting available tutors for " + course + "at: (" +  reqLat + "," + reqLon +")");
 
 	var tutors = availableTutors[course];
 
@@ -105,6 +108,7 @@ app.get('/tutors', function(req, res){
 		var tutorLat = tutor.location.xPos;
 		var tutorLon = tutor.location.yPos;
 
+		console.log("Tutor Location: (" + tutorLat + "," + tutorLon + ")");
 
 		getDistance(reqLat, reqLon, tutorLat, tutorLon, function(distance){
 			// show all tutors within 2 miles 
@@ -119,6 +123,7 @@ app.get('/tutors', function(req, res){
 
 	}, function(){ // callback after done going through tutors list 
 		console.log("Tutors nearby: " + nearbyTutors);
+		res.json(nearbyTutors);
 
 	});
 
@@ -128,8 +133,9 @@ app.get('/tutors', function(req, res){
 
 // build dictionary store of tutors on load 
 Course.getAll(function(courses){
-	if(courses.length > 0){
+	if(courses.length > 0){	
 		courses.forEach(function(course){
+			console.log("Adding course... : " + course.name);
 			availableTutors[course.name] = [];
 			for(var i =0; i < course.tutors.length; i++){
 				var tutor = course.tutors[i];
@@ -206,6 +212,7 @@ Course.getAll(function(courses){
 			if(err){
 				console.log(err);
 			}else{
+				console.log("New tutors saved");
 				// loop through saved tutors  
 				for(var i = 0; i < tutorList.length; i++){
 					// add each to course,
@@ -215,6 +222,11 @@ Course.getAll(function(courses){
 					if(i == tutorList.length-1){
 						// save course
 						course.save(function(err, course){
+							if(err){
+								console.log(err);
+								return;
+							}
+
 							// add the course and tutors to the available tutor list
 							availableTutors[course.name] = tutorList; 
 						});
@@ -248,9 +260,6 @@ io.on('connection', function (socket){
   	}
   });
 
-  socket.on(){
-
-  }
 
 });
 
@@ -258,7 +267,8 @@ io.on('connection', function (socket){
 
 
 
-function getDistance(lat1, lon2, lat2, lon2, next){
+function getDistance(lat1, lon1, lat2, lon2, next){
+	console.log("Finding distance between (" + lat1 + "," + lon1 + ") and (" + lat2 + "," + lon2 + ")" );
 	var R = 6371; // Radius of the earth in km
   	var dLat = deg2rad(lat2-lat1);  // deg2rad below
   	var dLon = deg2rad(lon2-lon1); 
@@ -270,6 +280,7 @@ function getDistance(lat1, lon2, lat2, lon2, next){
 
   	var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
   	var distance = R * c * 0.62137; // distance in mi
+  	console.log("Distance: " + distance + "miles");
   	next(distance);
 }
 

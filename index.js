@@ -97,8 +97,8 @@ app.get('/tutors', function(req, res){
 	var reqLat = req.query.lat;
 	var reqLon = req.query.lon;
 
-	console.log("Getting available tutors for " + course + "at: (" +  reqLat + "," + reqLon +")");
-
+	console.log("Getting available tutors for " + course + "at :(" +  reqLat + "," + reqLon +")");
+	console.log(availableTutors[course]);
 	var tutors = availableTutors[course];
 
 	var nearbyTutors = [];

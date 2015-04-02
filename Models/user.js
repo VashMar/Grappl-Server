@@ -33,7 +33,7 @@ var userSchema = new Schema({
 	messages: {type: ObjectId, ref: 'Message'},
 	tutorSession:{			// the information the tutor will set per broadcasted session
 		available: {type: Boolean, default: false},
-		price: {type: Number, default: 15},
+		price: {type: Number, default: 15.00},
 		travelDistance: {type: Number},
 		minLength: {type: Number, default: 30},   // minimum length of session in minutes
 		period: {type: Number, default: 45}	// availibility period in minutes 

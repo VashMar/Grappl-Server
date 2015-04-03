@@ -98,7 +98,7 @@ app.get('/tutors', function(req, res){
 	var reqLon = req.query.lon;
 
 	console.log("Getting available tutors for " + course + "at :(" +  reqLat + "," + reqLon +")");
-	console.log(availableTutors[course]);
+
 	var tutors = availableTutors[course];
 
 	var nearbyTutors = [];
@@ -243,6 +243,8 @@ Course.getAll(function(courses){
 
 
 io.on('connection', function (socket){
+  console.log("Socket Connected!");
+
   // the user for this socket connection 
   var currentUser;
   var token; 

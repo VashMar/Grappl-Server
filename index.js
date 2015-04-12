@@ -247,7 +247,8 @@ io.use(socketioJwt.authorize({
 }));
 
 io.on('connection', function (socket){
-  console.log("Socket Connected!" + socket.decoded_token.name);
+  console.log("Socket Connected!" + socket.decoded_token);
+  console.log(JSON.stringify(socket.decoded_token));
 
   // deserialize token to get user 
 

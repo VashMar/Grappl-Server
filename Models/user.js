@@ -141,7 +141,6 @@ userSchema.methods.clientTutorData = function(distance, next){
 	tutorData.rating = this.rating;
 	tutorData.location = this.location;
 	tutorData.profilePic = this.profilePic;
-	tutorData.id = this.id; 
 	tutorData.distance = distance.toFixed(2);             // distance from client 
 
 

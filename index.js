@@ -55,7 +55,6 @@ app.get("/login", function(req, res){
 	var pass = req.body.password;
 	var email = req.body.email;
 
-
 	User.login(email, pass, function(err, user){
 		if(err){
 			errHandle.loginErrors(res, err);
@@ -242,16 +241,21 @@ Course.getAll(function(courses){
 ////////////////////////////////////////////////////////////////////////////////////////////
 
 
+io.use(socketioJwt.authorize({
+  secret: 't3stk3y',
+  handshake: true
+}));
+
 io.on('connection', function (socket){
-  console.log("Socket Connected!");
+  console.log("Socket Connected!" + socket.decoded_token);
 
   // the user for this socket connection 
   var currentUser;
   var token; 
 
-  // returns tutors for a given course
+  // if a tutor gets grappled place both the student and tutor in the same room
   socket.on('grapple', function(data){
-  	socket.emit('tutorsAvailable', availableTutors[data.course]);
+  	
   });
 
   // sets a tutor as available to tutor a class 
@@ -259,6 +263,19 @@ io.on('connection', function (socket){
   	if(currentUser.tutor && currentUser.approved){
   		availableTutors[data.course].push(currentUser);
   	}
+
+
+
+  // socket.on("message")
+
+  // 	socket.emit('message')
+  //       socket.on("message", message);
+  //       socket.on("locationUpdate", locationUpdate);
+  //       socket.on("meetingSuggestion", meetingSuggestion);
+  //       socket.on("startSessionRequest", startSessionRequest);
+  //       socket.on("grapple", grapple);
+
+
   });
 
 

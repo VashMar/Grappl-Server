@@ -92,23 +92,21 @@ app.post("/signup", function(req, res){
 app.get('/tutors', function(req, res){
 
 	var course = req.query.course;
+
 	// coordinates of the requester 
 	var reqLat = req.query.lat;
 	var reqLon = req.query.lon;
 
 	console.log("Getting available tutors for " + course + "at :(" +  reqLat + "," + reqLon +")");
-
 	var tutors = availableTutors[course];
-
 	var nearbyTutors = [];
 
-
-	async.each(tutors, function(tutor, callback){
+	if(tutors){
+		async.each(tutors, function(tutor, callback){
 		var tutorLat = tutor.location.xPos;
 		var tutorLon = tutor.location.yPos;
 
 		console.log("Tutor Location: (" + tutorLat + "," + tutorLon + ")");
-
 		getDistance(reqLat, reqLon, tutorLat, tutorLon, function(distance){
 			// return relevant tutor data
 			tutor.clientTutorData(distance, function(tutorData){
@@ -116,7 +114,7 @@ app.get('/tutors', function(req, res){
 				callback();
 			});
 		});
-
+	}
 
 
 	}, function(){ // callback after done going through tutors list 
@@ -233,7 +231,6 @@ Course.getAll(function(courses){
 			}
 		});
 
-
 	}
 });
 
@@ -247,24 +244,24 @@ io.use(socketioJwt.authorize({
 }));
 
 io.on('connection', function (socket){
-  console.log("Socket Connected!" + socket.decoded_token);
-  console.log(JSON.stringify(socket.decoded_token));
-
-  // deserialize token to get user 
+  console.log("Socket Connected!" + socket.decoded_token.firstName);
 
   // the user for this socket connection 
-  var currentUser;
+  var currentUser = socket.decoded_token;   
+  var socketID = socket.id
   var token; 
 
-  // if a tutor gets grappled place both the student and tutor in the same room
+  // if a tutor gets grappled remove them from the available tutors cache and add them to a grappled cache
   socket.on('grapple', function(data){
-  	
+  	var tutorSocketID = data.id;  // get the tutors socketID and use it to join the same room as / broadcast to the tutor socket 
+	  	
   });
+
 
   // sets a tutor as available to tutor a class 
   socket.on('setAvailable', function(data){
   	if(currentUser.tutor && currentUser.approved){
-  		availableTutors[data.course].push(currentUser);
+  		availableTutors[data.course].push(currentUser);		// add the tutor the 
   	}
 
 

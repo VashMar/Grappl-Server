@@ -114,14 +114,15 @@ app.get('/tutors', function(req, res){
 				callback();
 			});
 		});
-	}
 
+		}, function(){ // callback after done going through tutors list 
+			console.log("Tutors nearby: " + nearbyTutors);
+			res.json(nearbyTutors);
+		});
 
-	}, function(){ // callback after done going through tutors list 
-		console.log("Tutors nearby: " + nearbyTutors);
+	}else{
 		res.json(nearbyTutors);
-
-	});
+	}
 
 });
 

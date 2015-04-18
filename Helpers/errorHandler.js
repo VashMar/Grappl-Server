@@ -10,6 +10,7 @@ exports.loginErrors = function(res,err){
 
 
 exports.signupErrors = function(res,err){
+	console.log("signup error");
 	if(err.name == "ValidationError"){
 		res.json(400);
 	}

@@ -68,6 +68,7 @@ userSchema.statics.create = function(first, last, email, password, next){
 	user.save(function(err, user){
 		console.log("Saving new user: " + first+ " " + last + " (" + email + ")");
 		if(err){
+			console.log(err);
 			next(err);
 		}else if(user){
 			next("", user);

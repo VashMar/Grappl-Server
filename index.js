@@ -50,7 +50,7 @@ app.get("/", function(req, res){
 	res.json(200);
 });
 
-app.get("/login", function(req, res){
+app.post("/login", function(req, res){
 	console.log("Login hit");
 	var pass = req.body.password;
 	var email = req.body.email;

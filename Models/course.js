@@ -4,7 +4,7 @@ var Schema = mongoose.Schema,
 
 
 var courseSchema = new Schema({
-	name: {type:String, required: true},
+	name: {type:String, required: true, unique: true},
 	tutors: [{type: ObjectId, ref: 'User'}],
 	tags: {type:String}
 });

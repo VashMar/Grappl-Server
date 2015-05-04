@@ -41,11 +41,9 @@ app.use(bodyParser.json()); // for parsing application/json
 app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
 app.use(multer()); // for parsing multipart/form-data
 
-// create a map to store available tutors in each course (eventually implement redis cache)
-var availableTutors = {};
 
 
-// Router //////
+////////////////////////////////////////////// Router ////////////////////////////////////////////////////////////
 app.get("/", function(req, res){
 	res.json(200);
 });
@@ -126,117 +124,149 @@ app.get('/tutors', function(req, res){
 
 });
 
-///////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// create a map to store available tutors in each course (eventually implement redis cache)
+var availableTutors = {};
+
 
 // build dictionary store of tutors on load 
-Course.getAll(function(courses){
-	if(courses.length > 0){	
-		courses.forEach(function(course){
-			console.log("Adding course... : " + course.name);
-			availableTutors[course.name] = [];
-			for(var i =0; i < course.tutors.length; i++){
-				var tutor = course.tutors[i];
-				if(tutor.tutorSession.available){
-					availableTutors[course.name].push(tutor); // add the tutor if they are available
-				}
-			}
-		});
-	}else{
+var COURSE_LIST = ["Chemistry 103", "Comp Sci 302", "French 4", "Math 234", "Physics 202"];
+var currentCourses;
 
-		// create a placeholder course
-		var course = new Course({name: 'CS302'});
+// populate 
+for(var i = 0; i < COURSE_LIST.length; i++){
 
-		// Lets fill in some dummy data
-		var user1 = new User({firstName: 'Eric', lastName: 'Cartman', email: 'ericCartman@test.com', password: 'test123', tutor: true, approved: true}),
-			user2 = new User({firstName: 'Kyle', lastName: 'Broflovski', email: 'kyleBrof@test.com', password: 'test123', tutor: true, approved: true}),
-			user3 = new User({firstName: 'Stan', lastName: 'Marsh', email: 'stanMarsh@test.com', password: 'test123', tutor: true, approved: true}),
-			user4 = new User({firstName: 'Kenny', lastName: 'McCormick', email: 'kennyMccormick@test.com', password: 'test123', tutor: true, approved: true});
+	var courseName = COURSE_LIST[i];
+	var course = new Course({name: courseName});
 
-
-		var tutorList = [];
-
-		var saveUser = function(err, user, callback){
-			if(err){
-				callback(err);
-			}else{
-				tutorList.push(user);
-				callback();
-			}
+	console.log("Adding course: " + courseName );
+	course.save(function(err){
+		if(err){
+			console.log(err);
 		}
+	});
 
-		// save all the dummy tutors with unique locations and add them to the course 
-		async.parallel([
-			function(callback){
-				user1.tutorSession.available = true;
-				// college library 
-				user1.location.xPos = 43.0767057;
-				user1.location.yPos = -89.4010609;
-				user1.save(function(err, user){
-					saveUser(err, user, callback);
-				});
-			},
-			function(callback){
-				user2.tutorSession.available = true;
-				// union south 
-				user2.location.xPos = 43.0719139;
-				user2.location.yPos = -89.4081352;
-				user2.save(function(err, user){
-					saveUser(err, user, callback);
-				});
+	availableTutors[courseName] = [];
+}
 
-			},
-			function(callback){
-				user3.tutorSession.available = true;
-				// grainger hall 
-				user3.location.xPos = 43.0726811;
-				user3.location.yPos = -89.40169209999999;
-				user3.save(function(err, user){
-					saveUser(err, user, callback);
-				});
 
-			}, 
-			function(callback){
-				user4.tutorSession.available = true;
-				// east campus mall
-				user4.location.xPos = 43.0724282;
-				user4.location.yPos = -89.3985619;
-				user4.save(function(err, user){
-					saveUser(err, user, callback);
-				});
-			}
+Course.getAll(function(courses){
 
-		], function(err){
-			if(err){
-				console.log(err);
-			}else{
-				console.log("New tutors saved");
-				// loop through saved tutors  
-				for(var i = 0; i < tutorList.length; i++){
-					// add each to course,
-					var tutor = tutorList[i];
-					course.tutors.push(tutor)
+	console.log("Currently offering " +  courses.length + " courses" );
+	currentCourses = courses; 
 
-					if(i == tutorList.length-1){
-						// save course
-						course.save(function(err, course){
-							if(err){
-								console.log(err);
-								return;
-							}
-
-							// add the course and tutors to the available tutor list
-							availableTutors[course.name] = tutorList; 
-						});
-					}
-				}
-			}
-		});
-
-	}
+	
 });
 
+// Course.getAll(function(courses){
+// 	if(courses.length > 0){	
+// 		courses.forEach(function(course){
+// 			console.log("Adding course... : " + course.name);
+// 			availableTutors[course.name] = [];
+// 			for(var i =0; i < course.tutors.length; i++){
+// 				var tutor = course.tutors[i];
+// 				if(tutor.tutorSession.available){
+// 					availableTutors[course.name].push(tutor); // add the tutor if they are available
+// 				}
+// 			}
+// 		});
+// 	}else{
 
-////////////////////////////////////////////////////////////////////////////////////////////
+// 		// create a placeholder course
+// 		var course = new Course({name: 'CS302'});
+
+// 		// Lets fill in some dummy data
+// 		var user1 = new User({firstName: 'Eric', lastName: 'Cartman', email: 'ericCartman@test.com', password: 'test123', tutor: true, approved: true}),
+// 			user2 = new User({firstName: 'Kyle', lastName: 'Broflovski', email: 'kyleBrof@test.com', password: 'test123', tutor: true, approved: true}),
+// 			user3 = new User({firstName: 'Stan', lastName: 'Marsh', email: 'stanMarsh@test.com', password: 'test123', tutor: true, approved: true}),
+// 			user4 = new User({firstName: 'Kenny', lastName: 'McCormick', email: 'kennyMccormick@test.com', password: 'test123', tutor: true, approved: true});
+
+
+// 		var tutorList = [];
+
+// 		var saveUser = function(err, user, callback){
+// 			if(err){
+// 				callback(err);
+// 			}else{
+// 				tutorList.push(user);
+// 				callback();
+// 			}
+// 		}
+
+// 		// save all the dummy tutors with unique locations and add them to the course 
+// 		async.parallel([
+// 			function(callback){
+// 				user1.tutorSession.available = true;
+// 				// college library 
+// 				user1.location.xPos = 43.0767057;
+// 				user1.location.yPos = -89.4010609;
+// 				user1.save(function(err, user){
+// 					saveUser(err, user, callback);
+// 				});
+// 			},
+// 			function(callback){
+// 				user2.tutorSession.available = true;
+// 				// union south 
+// 				user2.location.xPos = 43.0719139;
+// 				user2.location.yPos = -89.4081352;
+// 				user2.save(function(err, user){
+// 					saveUser(err, user, callback);
+// 				});
+
+// 			},
+// 			function(callback){
+// 				user3.tutorSession.available = true;
+// 				// grainger hall 
+// 				user3.location.xPos = 43.0726811;
+// 				user3.location.yPos = -89.40169209999999;
+// 				user3.save(function(err, user){
+// 					saveUser(err, user, callback);
+// 				});
+
+// 			}, 
+// 			function(callback){
+// 				user4.tutorSession.available = true;
+// 				// east campus mall
+// 				user4.location.xPos = 43.0724282;
+// 				user4.location.yPos = -89.3985619;
+// 				user4.save(function(err, user){
+// 					saveUser(err, user, callback);
+// 				});
+// 			}
+
+// 		], function(err){
+// 			if(err){
+// 				console.log(err);
+// 			}else{
+// 				console.log("New tutors saved");
+// 				// loop through saved tutors  
+// 				for(var i = 0; i < tutorList.length; i++){
+// 					// add each to course,
+// 					var tutor = tutorList[i];
+// 					course.tutors.push(tutor)
+
+// 					if(i == tutorList.length-1){
+// 						// save course
+// 						course.save(function(err, course){
+// 							if(err){
+// 								console.log(err);
+// 								return;
+// 							}
+
+// 							// add the course and tutors to the available tutor list
+// 							availableTutors[course.name] = tutorList; 
+// 						});
+// 					}
+// 				}
+// 			}
+// 		});
+
+// 	}
+// });
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 io.use(socketioJwt.authorize({
@@ -245,7 +275,7 @@ io.use(socketioJwt.authorize({
 }));
 
 io.on('connection', function (socket){
-  console.log("Socket Connected!" + socket.decoded_token.firstName);
+  console.log("Socket Connected! " + socket.decoded_token.firstName);
 
   // the user for this socket connection 
   var currentUser = socket.decoded_token;   

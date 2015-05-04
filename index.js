@@ -156,7 +156,7 @@ Course.getAll(function(courses){
 	console.log("Currently offering " +  courses.length + " courses" );
 	currentCourses = courses; 
 
-	
+
 });
 
 // Course.getAll(function(courses){
@@ -291,8 +291,8 @@ io.on('connection', function (socket){
 
   // sets a tutor as available to tutor a class 
   socket.on('setAvailable', function(data){
-  	 console.log(currentUser + "is ready to tutor!");
-  	 console.log(data);
+  	 	console.log(data);
+  	 	console.log(data.courses[0]);
   });
 
   // socket.on("message")

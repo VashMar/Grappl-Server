@@ -261,11 +261,9 @@ io.on('connection', function (socket){
 
   // sets a tutor as available to tutor a class 
   socket.on('setAvailable', function(data){
-  	if(currentUser.tutor && currentUser.approved){
-  		availableTutors[data.course].push(currentUser);		// add the tutor the 
-  	}
-
-
+  	 console.log(currentUser + "is ready to tutor!");
+  	 console.log(data);
+  });
 
   // socket.on("message")
 
@@ -277,7 +275,6 @@ io.on('connection', function (socket){
   //       socket.on("grapple", grapple);
 
 
-  });
 
 
 });

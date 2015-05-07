@@ -294,7 +294,7 @@ io.on('connection', function (socket){
   	}
 
   	if(user){
-  		console.log("User found!");
+  		console.log("Found User: " + JSON.stringify(user));
   		currentUser = user; 
   	}
 

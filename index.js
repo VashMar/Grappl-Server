@@ -283,10 +283,22 @@ io.use(socketioJwt.authorize({
 io.on('connection', function (socket){
   console.log("Socket Connected! " + socket.decoded_token.firstName);
 
-  // the user for this socket connection 
-  var currentUser = User.hydrate(socket.decoded_token);   
+  var currentUser = sokcet.decoded_token;
   var socketID = socket.id
-  var token; 
+
+  // retrieve the user object for this socket connection 
+  User.findOne({_id: socket.decoded_token.id}, function(err, user){
+
+  	if(err){
+  		console.log(err);
+  	}
+
+  	if(user){
+  		currentUser = user; 
+  	}
+
+  });
+ 
 
   // if a tutor gets grappled remove them from the available tutors cache and add them to a grappled cache
   socket.on('grapple', function(data){

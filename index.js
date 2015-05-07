@@ -297,20 +297,21 @@ io.on('connection', function (socket){
 
   // sets a tutor as available to tutor a class 
   socket.on('setAvailable', function(data){
-  		console.log("Setting " + currentUser.name + " as available..");
+  		console.log("Setting " + currentUser.firstName + " as available..");
+  		
   		// // save the tutor broadcast settings 
-  		// currentUser.updateTutorSession(data.time, data.distance, data.price, function(tutor){
+  		currentUser.updateTutorSession(data.time, data.distance, data.price, function(tutor){
 
-  		// 	currentUser = tutor; // update our version of currUser so it's same as DB 
+  			currentUser = tutor; // update our version of currUser so it's same as DB 
 
-  		// 	// add the tutor to the avaiable list for appropriate courses 
-  		// 	for(var i = 0; i < data.courses.length; i++){
-  		// 		availableTutors[data.course[i]].push(currentUser);
-  		// 		console.log(currentUser.name +  " added to course " + data.course[i]);
-  		// 		console.log("Available Tutors: " + availableTutors[data.course[i]]);
+  			// add the tutor to the avaiable list for appropriate courses 
+  			for(var i = 0; i < data.courses.length; i++){
+  				availableTutors[data.course[i]].push(currentUser);
+  				console.log(currentUser.name +  " added to course " + data.course[i]);
+  				console.log("Available Tutors: " + availableTutors[data.course[i]]);
 
-  		// 	}
-  		// });
+  			}
+  		});
   });
 
 

@@ -294,6 +294,7 @@ io.on('connection', function (socket){
   	}
 
   	if(user){
+  		console.log("User found!");
   		currentUser = user; 
   	}
 

@@ -297,7 +297,7 @@ io.on('connection', function (socket){
 
   // sets a tutor as available to tutor a class 
   socket.on('setAvailable', function(data){
-
+  		console.log("Setting " currentUser.name " as available..");
   		// // save the tutor broadcast settings 
   		// currentUser.updateTutorSession(data.time, data.distance, data.price, function(tutor){
 
@@ -308,7 +308,7 @@ io.on('connection', function (socket){
   		// 		availableTutors[data.course[i]].push(currentUser);
   		// 		console.log(currentUser.name +  " added to course " + data.course[i]);
   		// 		console.log("Available Tutors: " + availableTutors[data.course[i]]);
-  				
+
   		// 	}
   		// });
   });

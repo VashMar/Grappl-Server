@@ -285,6 +285,7 @@ io.on('connection', function (socket){
 
   var currentUser = socket.decoded_token;
   var socketID = socket.id;
+  var tutorCourses = [];		// if it's user is a tutor keep track of courses 
 
   console.log(JSON.stringify(currentUser));
   console.log(JSON.stringify(currentUser.id));
@@ -313,40 +314,58 @@ io.on('connection', function (socket){
 
   // sets a tutor as available to tutor a class 
   socket.on('setAvailable', function(data){
-  		console.log("Setting " + currentUser.firstName + " as available..");
+		console.log("Setting " + currentUser.firstName + " as available..");
 
-  		// // save the tutor broadcast settings 
-  		currentUser.updateTutorSession(data.time, data.distance, data.price, function(tutor){
+		// // save the tutor broadcast settings 
+		currentUser.updateTutorSession(data.time, data.distance, data.price, data.lat, data.lon, function(tutor){
 
-  			currentUser = tutor; // update our version of currUser so it's same as DB 
+			currentUser = tutor; // update our version of currUser so it's same as DB 
+			tutorCourses = data.courses; 
 
-  			// add the tutor to the avaiable list for appropriate courses 
-  			for(var i = 0; i < data.courses.length; i++){
-  				availableTutors[data.courses[i]].push(currentUser);
-  				console.log(currentUser.name +  " added to course " + data.courses[i]);
-  				console.log("Available Tutors: " + availableTutors[data.courses[i]]);
+			// add the tutor to the avaiable list for appropriate courses 
+			for(var i = 0; i < data.courses.length; i++){
 
-  			}
-  		});
+				var tutors = availableTutors[data.courses[i]];
+
+				if(!tutorExists(tutors, currentUser)){
+					tutors.push(currentUser);
+					console.log(currentUser.firstName +  " added to course " + data.courses[i]);
+					console.log("Available Tutors: " + availableTutors[data.courses[i]]);
+				}
+		
+			}
+		});
   });
 
+  // removes a tutor from the availability pool for all their courses
+  socket.on('removeAvailable', function(data){
 
-  // socket.on("message")
+  		tutorCourses.forEach(function(course){
+  			var tutors = availableTutors[course];
+  			for(var i =0; i < tutors.length; i++){
+  				if(tutors[i]._id == currentUser._id){
+  					console.log(tutor.firstName + " " + tutor.lastName + " is no longer available")
+  				}
+  			}
+  		});
 
-  // 	socket.emit('message')
-  //       socket.on("message", message);
-  //       socket.on("locationUpdate", locationUpdate);
-  //       socket.on("meetingSuggestion", meetingSuggestion);
-  //       socket.on("startSessionRequest", startSessionRequest);
-  //       socket.on("grapple", grapple);
-
-
+  });	
 
 
 });
 
+// returns true if tutor exists in list of tutors
+function tutorExists(tutors, currTutor){
 
-
+	for( var i = 0; i < tutors.length; i++){
+		if(tutors[i]._id) === currTutor._id){
+			return true;
+		}
+		if(i == tutors.length-1){
+			return false; 
+		}
+	}
+}
 
 
 function getDistance(lat1, lon1, lat2, lon2, next){

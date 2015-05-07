@@ -150,10 +150,12 @@ userSchema.methods.clientTutorData = function(distance, next){
 
 
 // adds session info and returns the tutor 
-userSchema.methods.updateTutorSession = function(time, distance, price, next){
+userSchema.methods.updateTutorSession = function(time, distance, price, lat, lon, next){
 	this.tutorSession.available = time;
 	this.tutorSession.distance = distance;
 	this.tutorSession.price = price;
+	this.location.xPos = lat;
+	this.location.yPos = lon;
 	this.save();
 
 	next(this);

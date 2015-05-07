@@ -286,6 +286,8 @@ io.on('connection', function (socket){
   var currentUser = socket.decoded_token;
   var socketID = socket.id;
 
+  console.log(JSON.stringify(currentUser));
+
   // retrieve the user object for this socket connection 
   User.findOne({_id: socket.decoded_token.id}, function(err, user){
 

@@ -284,7 +284,7 @@ io.on('connection', function (socket){
   console.log("Socket Connected! " + socket.decoded_token.firstName);
 
   // the user for this socket connection 
-  var currentUser = socket.decoded_token;   
+  var currentUser = User.hydrate(socket.decoded_token);   
   var socketID = socket.id
   var token; 
 
@@ -298,7 +298,7 @@ io.on('connection', function (socket){
   // sets a tutor as available to tutor a class 
   socket.on('setAvailable', function(data){
   		console.log("Setting " + currentUser.firstName + " as available..");
-  		
+
   		// // save the tutor broadcast settings 
   		currentUser.updateTutorSession(data.time, data.distance, data.price, function(tutor){
 

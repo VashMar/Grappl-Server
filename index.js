@@ -42,6 +42,9 @@ app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x
 app.use(multer()); // for parsing multipart/form-data
 
 
+// build dictionary store of tutors on load 
+var COURSE_LIST = ["Chemistry 103", "Comp Sci 302", "French 4", "Math 234", "Physics 202"];
+
 
 ////////////////////////////////////////////// Router ////////////////////////////////////////////////////////////
 app.get("/", function(req, res){
@@ -124,14 +127,17 @@ app.get('/tutors', function(req, res){
 
 });
 
+// return the course list 
+app.get('/courses', function(req, res){
+	res.JSON(COURSE_LIST);
+});
+
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // create a map to store available tutors in each course (eventually implement redis cache)
 var availableTutors = {};
 
-
-// build dictionary store of tutors on load 
-var COURSE_LIST = ["Chemistry 103", "Comp Sci 302", "French 4", "Math 234", "Physics 202"];
 var currentCourses;
 
 // populate 
@@ -291,9 +297,22 @@ io.on('connection', function (socket){
 
   // sets a tutor as available to tutor a class 
   socket.on('setAvailable', function(data){
-  	 	console.log(data);
-  	 	console.log(data.courses[0]);
+
+  		// save the tutor broadcast settings 
+  		currentUser.updateTutorSession(data.time, data.distance, data.price, function(tutor){
+
+  			currentUser = tutor; // update our version of currUser so it's same as DB 
+
+  			// add the tutor to the avaiable list for appropriate courses 
+  			for(var i = 0; i < data.courses.length; i++){
+  				availableTutors[data.course[i]].push(currentUser);
+  				console.log(currentUser.name +  " added to course " + data.course[i]);
+  				console.log("Available Tutors: " + availableTutors[data.course[i]]);
+  			}
+
+  		});
   });
+
 
   // socket.on("message")
 

@@ -149,6 +149,17 @@ userSchema.methods.clientTutorData = function(distance, next){
 }
 
 
+// adds session info and returns the tutor 
+userSchema.methods.updateTutorSession = function(time, distance, price, next){
+	this.tutorSession.available = time;
+	this.tutorSession.distance = distance;
+	this.tutorSession.price = price;
+	this.save();
+
+	next(this);
+}
+
+
 userSchema.methods.updateStudentRating = function(rating, next){
 	this.studentRating = rating;
 	this.save();

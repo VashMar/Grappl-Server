@@ -322,9 +322,9 @@ io.on('connection', function (socket){
 
   			// add the tutor to the avaiable list for appropriate courses 
   			for(var i = 0; i < data.courses.length; i++){
-  				availableTutors[data.course[i]].push(currentUser);
-  				console.log(currentUser.name +  " added to course " + data.course[i]);
-  				console.log("Available Tutors: " + availableTutors[data.course[i]]);
+  				availableTutors[data.courses[i]].push(currentUser);
+  				console.log(currentUser.name +  " added to course " + data.courses[i]);
+  				console.log("Available Tutors: " + availableTutors[data.courses[i]]);
 
   			}
   		});

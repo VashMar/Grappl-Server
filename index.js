@@ -283,8 +283,8 @@ io.use(socketioJwt.authorize({
 io.on('connection', function (socket){
   console.log("Socket Connected! " + socket.decoded_token.firstName);
 
-  var currentUser = sokcet.decoded_token;
-  var socketID = socket.id
+  var currentUser = socket.decoded_token;
+  var socketID = socket.id;
 
   // retrieve the user object for this socket connection 
   User.findOne({_id: socket.decoded_token.id}, function(err, user){

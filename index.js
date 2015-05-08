@@ -61,8 +61,8 @@ app.post("/login", function(req, res){
 			errHandle.loginErrors(res, err);
 		}else if(user){
 			// we are sending the profile in the token
-			var token = jwt.sign(user, jwtSecret);
-		  	res.json({token: token});
+			var token = jwt.sign(user._id, jwtSecret);
+		  	res.json({token: token, user: user});
 		}
 	});
 });
@@ -82,8 +82,8 @@ app.post("/signup", function(req, res){
 			errHandle.signupErrors(res, err);
 		}else if(user){
 			// we are sending the profile in the token
-			var token = jwt.sign(user, jwtSecret);
-		  	res.json({token: token});
+			var token = jwt.sign(user._id, jwtSecret);
+		  	res.json({token: token, user: user});
 		}
 	});
 });
@@ -350,8 +350,6 @@ io.on('connection', function (socket){
   		});
 
   });	
-
-
 });
 
 // returns true if tutor exists in list of tutors

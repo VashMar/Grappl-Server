@@ -358,7 +358,7 @@ io.on('connection', function (socket){
 function tutorExists(tutors, currTutor){
 
 	for( var i = 0; i < tutors.length; i++){
-		if(tutors[i]._id) === currTutor._id){
+		if(tutors[i]._id === currTutor._id){
 			console.log("Tutor already exists");
 			return true;
 		}

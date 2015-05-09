@@ -58,6 +58,7 @@ app.post("/login", function(req, res){
 
 	User.login(email, pass, function(err, user){
 		if(err){
+			console.log("Login error");
 			errHandle.loginErrors(res, err);
 		}else if(user){
 			// we are sending the profile in the token

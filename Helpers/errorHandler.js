@@ -1,5 +1,6 @@
 exports.loginErrors = function(res,err){
 	if(err.status){
+		console.log(err.message);
 		res.status(err.status).json(err.message);
 	}else{
 		console.log(err);

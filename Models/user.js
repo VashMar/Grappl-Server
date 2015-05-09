@@ -131,7 +131,7 @@ userSchema.methods.comparePassword = function(sentPassword, callback){
 };
 
 // returns a hash for client for current user Data 
-userSchema.methods.clientAccountData() = function(){
+userSchema.methods.clientAccountData = function(){
 	var accountData = {};
 
 	accountData.id = this.id;          

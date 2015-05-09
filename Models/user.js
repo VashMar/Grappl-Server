@@ -130,8 +130,23 @@ userSchema.methods.comparePassword = function(sentPassword, callback){
     });
 };
 
+// returns a hash for client for current user Data 
+userSchema.methods.clientAccountData() = function(){
+	var accountData = {};
 
-// returns a hash for client with distance and other relevant tutor information 
+	accountData.id = this.id;          
+	accountData.firstName = this.firstName;
+	accountData.lastName = this.lastName;
+	accountData.email = this.email;
+	accountData.profilePic = this.profilePic;
+
+
+	return accountData;
+
+}
+
+
+// returns a hash for client with relevant tutor information 
 userSchema.methods.clientTutorData = function(distance, next){
 	var tutorData = {};
 

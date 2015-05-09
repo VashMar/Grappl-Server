@@ -58,12 +58,12 @@ app.post("/login", function(req, res){
 
 	User.login(email, pass, function(err, user){
 		if(err){
-			console.log("Login error");
+			console.log("Login error")
 			errHandle.loginErrors(res, err);
 		}else if(user){
 			// we are sending the profile in the token
 			var token = jwt.sign(user._id, jwtSecret);
-		  	res.json({token: token, user: user});
+		  	res.json({token: token, user: user: user.clientAccountData());
 		}
 	});
 });
@@ -84,7 +84,7 @@ app.post("/signup", function(req, res){
 		}else if(user){
 			// we are sending the profile in the token
 			var token = jwt.sign(user._id, jwtSecret);
-		  	res.json({token: token, user: user});
+		  	res.json({token: token, user: user.clientAccountData()});
 		}
 	});
 });
@@ -162,7 +162,6 @@ Course.getAll(function(courses){
 
 	console.log("Currently offering " +  courses.length + " courses" );
 	currentCourses = courses; 
-
 
 });
 

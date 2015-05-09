@@ -63,7 +63,7 @@ app.post("/login", function(req, res){
 		}else if(user){
 			// we are sending the profile in the token
 			var token = jwt.sign(user._id, jwtSecret);
-		  	res.json({token: token, user: user: user.clientAccountData()});
+		  	res.json({token: token, user: user.clientAccountData()});
 		}
 	});
 });

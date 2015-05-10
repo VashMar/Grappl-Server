@@ -305,6 +305,7 @@ io.on('connection', function (socket){
 
   // if a tutor gets grappled remove them from the available tutors cache and add them to a grappled cache
   socket.on('grapple', function(data){
+  	console.log("Grapple data: " + JSON.stringify(data)); 
   	var tutorSocketID = data.id;  // get the tutors socketID and use it to join the same room as / broadcast to the tutor socket 
   	socket.broadcast.to(tutorSocketID).emit('grapple',  "Grappled by " + currentUser.name);
   });

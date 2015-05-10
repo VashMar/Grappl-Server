@@ -182,8 +182,10 @@ userSchema.methods.updateStudentRating = function(rating, next){
 	this.save();
 }
 
+
+// averages newly sent rating with old rating to get updated rating 
 userSchema.methods.updateTutorRating = function(rating, next){
-	this.tutorRating = rating; 
+	this.tutorRating =  (this.tutoRating + rating)/2 ; 
 	this.save();
 }
 

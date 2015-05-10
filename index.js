@@ -337,6 +337,12 @@ io.on('connection', function (socket){
 		});
   });
 
+
+  socket.on('addRating', function(data)
+	  	console.log("updating tutor rating");
+	  	currentUser.updateTutorRating(data.rating);
+  });
+
   // removes a tutor from the availability pool for all their courses
   socket.on('removeAvailable', function(data){
 
@@ -344,7 +350,7 @@ io.on('connection', function (socket){
   			var tutors = availableTutors[course];
   			for(var i =0; i < tutors.length; i++){
   				if(tutors[i]._id == currentUser._id){
-  					console.log(tutor.firstName + " " + tutor.lastName + " is no longer available")
+  					console.log(tutor.firstName + " " + tutor.lastName + " is no longer available");
   				}
   			}
   		});

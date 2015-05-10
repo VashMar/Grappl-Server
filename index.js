@@ -338,9 +338,11 @@ io.on('connection', function (socket){
   });
 
 
-  socket.on('addRating', function(data)
-	  	console.log("updating tutor rating");
-	  	currentUser.updateTutorRating(data.rating);
+  socket.on('addRating', function(data){
+	  	console.log("Updating tutor rating..");
+	  	currentUser.updateTutorRating(data.rating, function(rating){
+			socket.emit('updatedRating', rating);
+	  	});
   });
 
   // removes a tutor from the availability pool for all their courses

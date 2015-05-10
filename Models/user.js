@@ -157,7 +157,7 @@ userSchema.methods.clientTutorData = function(distance, next){
 	tutorData.rating = this.rating;
 	tutorData.location = this.location;
 	tutorData.profilePic = this.profilePic;
-	tutorData.distance = distance.toFixed(2);             // distance from client 
+	tutorData.distance = distance.toFixed(2); // distance from client 
 
 
 	next(tutorData);
@@ -187,6 +187,7 @@ userSchema.methods.updateStudentRating = function(rating, next){
 userSchema.methods.updateTutorRating = function(rating, next){
 	this.tutorRating =  (this.tutoRating + rating)/2 ; 
 	this.save();
+	next(this.tutorRating);
 }
 
 userSchema.methods.updateLocation = function(xPos, yPos, next){

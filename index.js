@@ -157,12 +157,9 @@ for(var i = 0; i < COURSE_LIST.length; i++){
 	availableTutors[courseName] = [];
 }
 
-
 Course.getAll(function(courses){
-
 	console.log("Currently offering " +  courses.length + " courses" );
 	currentCourses = courses; 
-
 });
 
 // Course.getAll(function(courses){
@@ -281,7 +278,7 @@ io.use(socketioJwt.authorize({
 }));
 
 io.on('connection', function (socket){
-  console.log("Socket Connected! " + socket.decoded_token.firstName);
+  console.log("Socket Connected! " + socket.decoded_token);
 
   var currentUser = socket.decoded_token;
   var socketID = socket.id;
@@ -300,6 +297,7 @@ io.on('connection', function (socket){
   	if(user){
   		console.log("Found User: " + JSON.stringify(user));
   		currentUser = user; 
+ 		socket.join(currentUser._id);   // join room based on id 
   	}
 
   });
@@ -308,7 +306,7 @@ io.on('connection', function (socket){
   // if a tutor gets grappled remove them from the available tutors cache and add them to a grappled cache
   socket.on('grapple', function(data){
   	var tutorSocketID = data.id;  // get the tutors socketID and use it to join the same room as / broadcast to the tutor socket 
-	  	
+  	socket.broadcast.to(tutorSocketID).emit('grapple',  "Grappled by " + currentUser.name);
   });
 
 
@@ -359,6 +357,7 @@ io.on('connection', function (socket){
 
   });	
 });
+
 
 // returns true if tutor exists in list of tutors
 function tutorExists(tutors, currTutor){

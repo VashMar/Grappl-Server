@@ -37,7 +37,7 @@ var userSchema = new Schema({
 		travelDistance: {type: Number},
 		minLength: {type: Number, default: 30},   // minimum length of session in minutes
 		period: {type: Number, default: 45}	// availibility period in minutes 
-	} 
+	}
 });
 
 
@@ -158,7 +158,6 @@ userSchema.methods.clientTutorData = function(distance, next){
 	tutorData.location = this.location;
 	tutorData.profilePic = this.profilePic;
 	tutorData.distance = distance.toFixed(2); // distance from client 
-
 
 	next(tutorData);
 }

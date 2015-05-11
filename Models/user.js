@@ -178,15 +178,20 @@ userSchema.methods.updateTutorSession = function(time, distance, price, lat, lon
 
 userSchema.methods.updateStudentRating = function(rating, next){
 	this.studentRating = rating;
-	this.save();
+	this.save(function(err, user){
+		if(err){console.log(err);}
+	});
 }
 
 
 // averages newly sent rating with old rating to get updated rating 
 userSchema.methods.updateTutorRating = function(rating, next){
 	this.tutorRating =  (this.tutoRating + rating)/2 ; 
-	this.save();
-	next(this.tutorRating);
+	this.save(function(err, user){
+		console.log("Updating tutor rating..");
+		if(err){console.log(err);}
+	});
+	next(this);
 }
 
 userSchema.methods.updateLocation = function(xPos, yPos, next){

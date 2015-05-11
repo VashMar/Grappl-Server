@@ -325,24 +325,27 @@ io.on('connection', function (socket){
 			for(var i = 0; i < data.courses.length; i++){
 
 				var tutors = availableTutors[data.courses[i]];
-
 				if(!tutorExists(tutors, currentUser)){
 					tutors.push(currentUser);
 					console.log(currentUser.firstName +  " added to course " + data.courses[i]);
 					console.log("Available Tutors: " + availableTutors[data.courses[i]]);
 				}
-		
 			}
 		});
   });
 
 
-  // socket.on('addRating', function(data){
-	 //  	console.log("Updating tutor rating..");
-	 //  	currentUser.updateTutorRating(data.rating, function(rating){
-		// 	socket.emit('updatedRating', rating);
-	 //  	});
-  // });
+  // updates the rating of other user 
+  socket.on('updateRating', function(data){
+	  	User.find({_id:data.id}, function(err, user){
+	  	 	if(err){
+	  	 		console.log(err);
+	  	 	}
+	  	 	if(user){
+	  	 		console.log("Updating tutor rating");
+	  	 		user.updateTutorRating(data.rating);
+	  	});
+  });
 
   // removes a tutor from the availability pool for all their courses
   socket.on('removeAvailable', function(data){

@@ -344,6 +344,7 @@ io.on('connection', function (socket){
 	  	 	if(user){
 	  	 		console.log("Updating tutor rating");
 	  	 		user.updateTutorRating(data.rating);
+	  	 	}
 	  	});
   });
 

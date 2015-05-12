@@ -297,7 +297,8 @@ io.on('connection', function (socket){
   	if(user){
   		console.log("Found User: " + JSON.stringify(user));
   		currentUser = user; 
- 		socket.join(currentUser._id);   // join room based on id 
+  		console.log("joining room: " + currentUser.id);
+ 		socket.join(currentUser.id);   // join room based on id 
   	}
 
   });
@@ -307,6 +308,7 @@ io.on('connection', function (socket){
   socket.on('grapple', function(data){
   	console.log("Grapple data: " + JSON.stringify(data)); 
   	var tutorSocketID = data.id;  // get the tutors socketID and use it to join the same room as / broadcast to the tutor socket 
+  	console.log("emitting to room:" + tutorSocketID);
   	socket.broadcast.to(tutorSocketID).emit('grapple',  "Grappled by " + currentUser.name);
   });
 

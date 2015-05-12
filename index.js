@@ -283,6 +283,7 @@ io.on('connection', function (socket){
   var currentUser = socket.decoded_token;
   var socketID = socket.id;
   var tutorCourses = [];		// if it's user is a tutor keep track of courses 
+  var connectedUser;
 
   // retrieve the user object for this socket connection 
   User.findOne({_id: socket.decoded_token}, function(err, user){
@@ -304,10 +305,9 @@ io.on('connection', function (socket){
   // if a tutor gets grappled remove them from the available tutors cache and add them to a grappled cache
   socket.on('grapple', function(data){
   	console.log("Grapple data: " + JSON.stringify(data)); 
-  	var tutorSocketID = data.id;  // get the tutors socketID and use it to join the same room as / broadcast to the tutor socket 
+  	connectedUser = data.id;  // get the tutors socketID and use it to join the same room as / broadcast to the tutor socket 
   	console.log("emitting to room:" + tutorSocketID);
-  	io.to(tutorSocketID).emit('grapple');
-  	socket.broadcast.to(tutorSocketID).emit('grapple',  "Grappled by " + currentUser.name);
+  	io.to(connectedUser).emit('grapple', {id: currentUser.id});
   });
 
 

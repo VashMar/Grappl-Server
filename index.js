@@ -284,9 +284,6 @@ io.on('connection', function (socket){
   var socketID = socket.id;
   var tutorCourses = [];		// if it's user is a tutor keep track of courses 
 
-  console.log(JSON.stringify(currentUser));
-  console.log(JSON.stringify(currentUser.id));
-
   // retrieve the user object for this socket connection 
   User.findOne({_id: socket.decoded_token}, function(err, user){
 

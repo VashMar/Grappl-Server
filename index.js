@@ -309,6 +309,7 @@ io.on('connection', function (socket){
   	console.log("Grapple data: " + JSON.stringify(data)); 
   	var tutorSocketID = data.id;  // get the tutors socketID and use it to join the same room as / broadcast to the tutor socket 
   	console.log("emitting to room:" + tutorSocketID);
+  	io.to(tutorSocketID).emit('grapple'):
   	socket.broadcast.to(tutorSocketID).emit('grapple',  "Grappled by " + currentUser.name);
   });
 

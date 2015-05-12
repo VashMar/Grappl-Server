@@ -306,8 +306,9 @@ io.on('connection', function (socket){
   socket.on('grapple', function(data){
   	console.log("Grapple data: " + JSON.stringify(data)); 
   	connectedUser = data.id;  // get the tutors socketID and use it to join the same room as / broadcast to the tutor socket 
-  	console.log("emitting to room:" + tutorSocketID);
-  	io.to(connectedUser).emit('grapple', currentUser.id);
+  	console.log("emitting to room: " + tutorSocketID);
+  	console.log("sending id: " + currentUser.id);
+  	io.to(connectedUser).emit('grapple', {id: currentUser.id});
   });
 
 

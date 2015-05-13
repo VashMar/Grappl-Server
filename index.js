@@ -308,8 +308,8 @@ io.on('connection', function (socket){
   	connectedUser = data.id;  // get the tutors socketID and use it to join the same room as / broadcast to the tutor socket 
   	console.log("emitting to room: " + connectedUser);
   	console.log("sending id: " + currentUser.id);
-  	io.to(connectedUser).emit('grapple', {id: currentUser.id});
-  });
+  	io.to(connectedUser).emit('grapple', {id: currentUser});
+  }); 
 
 
   // sets a tutor as available to tutor a class 

@@ -139,7 +139,7 @@ userSchema.methods.clientAccountData = function(){
 	accountData.lastName = this.lastName;
 	accountData.email = this.email;
 	accountData.profilePic = this.profilePic;
-
+	accountData.rating = this.studentRating; 
 
 	return accountData;
 

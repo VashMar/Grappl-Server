@@ -45,6 +45,7 @@ app.use(multer()); // for parsing multipart/form-data
 // build dictionary store of tutors on load 
 var COURSE_LIST = ["Chemistry 103", "Comp Sci 302", "French 4", "Math 234", "Physics 202"];
 
+var ALL_COURSES = "All";  // signifies index for all the courses 
 
 ////////////////////////////////////////////// Router ////////////////////////////////////////////////////////////
 app.get("/", function(req, res){
@@ -130,18 +131,20 @@ app.get('/tutors', function(req, res){
 
 // return the course list 
 app.get('/courses', function(req, res){
-	res.JSON(COURSE_LIST);
+	res.json(COURSE_LIST);
 });
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // create a map to store available tutors in each course (eventually implement redis cache)
-var availableTutors = {};
+var availableTutors = {},
+	availableTutors[ALL_COURSES] = []; // makes sure we can track all the available tutors at once 
 
-var currentCourses;
+// a map to store 
+var grappledTutors = {}
 
-// populate 
+// populates the courses based on the course list 
 for(var i = 0; i < COURSE_LIST.length; i++){
 
 	var courseName = COURSE_LIST[i];
@@ -157,133 +160,21 @@ for(var i = 0; i < COURSE_LIST.length; i++){
 	availableTutors[courseName] = [];
 }
 
-Course.getAll(function(courses){
-	console.log("Currently offering " +  courses.length + " courses" );
-	currentCourses = courses; 
-});
 
-// Course.getAll(function(courses){
-// 	if(courses.length > 0){	
-// 		courses.forEach(function(course){
-// 			console.log("Adding course... : " + course.name);
-// 			availableTutors[course.name] = [];
-// 			for(var i =0; i < course.tutors.length; i++){
-// 				var tutor = course.tutors[i];
-// 				if(tutor.tutorSession.available){
-// 					availableTutors[course.name].push(tutor); // add the tutor if they are available
-// 				}
-// 			}
-// 		});
-// 	}else{
-
-// 		// create a placeholder course
-// 		var course = new Course({name: 'CS302'});
-
-// 		// Lets fill in some dummy data
-// 		var user1 = new User({firstName: 'Eric', lastName: 'Cartman', email: 'ericCartman@test.com', password: 'test123', tutor: true, approved: true}),
-// 			user2 = new User({firstName: 'Kyle', lastName: 'Broflovski', email: 'kyleBrof@test.com', password: 'test123', tutor: true, approved: true}),
-// 			user3 = new User({firstName: 'Stan', lastName: 'Marsh', email: 'stanMarsh@test.com', password: 'test123', tutor: true, approved: true}),
-// 			user4 = new User({firstName: 'Kenny', lastName: 'McCormick', email: 'kennyMccormick@test.com', password: 'test123', tutor: true, approved: true});
-
-
-// 		var tutorList = [];
-
-// 		var saveUser = function(err, user, callback){
-// 			if(err){
-// 				callback(err);
-// 			}else{
-// 				tutorList.push(user);
-// 				callback();
-// 			}
-// 		}
-
-// 		// save all the dummy tutors with unique locations and add them to the course 
-// 		async.parallel([
-// 			function(callback){
-// 				user1.tutorSession.available = true;
-// 				// college library 
-// 				user1.location.xPos = 43.0767057;
-// 				user1.location.yPos = -89.4010609;
-// 				user1.save(function(err, user){
-// 					saveUser(err, user, callback);
-// 				});
-// 			},
-// 			function(callback){
-// 				user2.tutorSession.available = true;
-// 				// union south 
-// 				user2.location.xPos = 43.0719139;
-// 				user2.location.yPos = -89.4081352;
-// 				user2.save(function(err, user){
-// 					saveUser(err, user, callback);
-// 				});
-
-// 			},
-// 			function(callback){
-// 				user3.tutorSession.available = true;
-// 				// grainger hall 
-// 				user3.location.xPos = 43.0726811;
-// 				user3.location.yPos = -89.40169209999999;
-// 				user3.save(function(err, user){
-// 					saveUser(err, user, callback);
-// 				});
-
-// 			}, 
-// 			function(callback){
-// 				user4.tutorSession.available = true;
-// 				// east campus mall
-// 				user4.location.xPos = 43.0724282;
-// 				user4.location.yPos = -89.3985619;
-// 				user4.save(function(err, user){
-// 					saveUser(err, user, callback);
-// 				});
-// 			}
-
-// 		], function(err){
-// 			if(err){
-// 				console.log(err);
-// 			}else{
-// 				console.log("New tutors saved");
-// 				// loop through saved tutors  
-// 				for(var i = 0; i < tutorList.length; i++){
-// 					// add each to course,
-// 					var tutor = tutorList[i];
-// 					course.tutors.push(tutor)
-
-// 					if(i == tutorList.length-1){
-// 						// save course
-// 						course.save(function(err, course){
-// 							if(err){
-// 								console.log(err);
-// 								return;
-// 							}
-
-// 							// add the course and tutors to the available tutor list
-// 							availableTutors[course.name] = tutorList; 
-// 						});
-// 					}
-// 				}
-// 			}
-// 		});
-
-// 	}
-// });
-
-
-/////////////////////////////////////////////////////////////////////////////////////////////////
-
-
+// authorize the socket connection based on passed in token 
 io.use(socketioJwt.authorize({
   secret: 't3stk3y',
   handshake: true
 }));
 
+
 io.on('connection', function (socket){
   console.log("Socket Connected! " + socket.decoded_token);
 
-  var currentUser = socket.decoded_token;
-  var socketID = socket.id;
+  var currentUser;				// tracks the user on this socket 
+  var socketID = socket.id;		// id of this socket 
   var tutorCourses = [];		// if it's user is a tutor keep track of courses 
-  var connectedUser;
+  var connectedUser;			// whomever this user may be 
 
   // retrieve the user object for this socket connection 
   User.findOne({_id: socket.decoded_token}, function(err, user){
@@ -306,9 +197,14 @@ io.on('connection', function (socket){
   socket.on('grapple', function(data){
   	console.log("Grapple data: " + JSON.stringify(data)); 
   	connectedUser = data.id;  // get the tutors socketID and use it to join the same room as / broadcast to the tutor socket 
-  	console.log("emitting to room: " + connectedUser);
-  	console.log("sending id: " + currentUser.id);
-  	io.to(connectedUser).emit('grapple', {id: currentUser});
+  	console.log("emitting response to room: " + connectedUser);
+
+  	// check to see if tutor is in the available list 
+
+
+  	// return the user object who initated the grapple 
+  	io.to(connectedUser).emit('grapple', {id: currentUser.clientAccountData()});
+
   }); 
 
 
@@ -320,16 +216,21 @@ io.on('connection', function (socket){
 		currentUser.updateTutorSession(data.time, data.distance, data.price, data.lat, data.lon, function(tutor){
 
 			currentUser = tutor; // update our version of currUser so it's same as DB 
-			tutorCourses = data.courses; 
+			tutorCourses = data.courses; // updates tutors current course list   
 
-			// add the tutor to the avaiable list for appropriate courses 
-			for(var i = 0; i < data.courses.length; i++){
+			// add the tutor to the available list for all courses if they don't exist 
+			if(!tutorExists(availableTutors[ALL_COURSES], currentUser)){
+				availableTutors[ALL_COURSES].push(currentUser);	
+			}
 
-				var tutors = availableTutors[data.courses[i]];
+			// add the tutor to the available list for appropriate courses 
+			for(var i = 0; i < tutorCourses.length; i++){
+
+				var tutors = availableTutors[tutorCourses[i]];
 				if(!tutorExists(tutors, currentUser)){
 					tutors.push(currentUser);
-					console.log(currentUser.firstName +  " added to course " + data.courses[i]);
-					console.log("Available Tutors: " + availableTutors[data.courses[i]]);
+					console.log(currentUser.firstName +  " added to course " + tutorCourses[i]);
+					console.log("Available Tutors: " + availableTutors[tutorCourses[i]]);
 				}
 			}
 		});
@@ -353,15 +254,16 @@ io.on('connection', function (socket){
   // removes a tutor from the availability pool for all their courses
   socket.on('removeAvailable', function(data){
 
+
   		tutorCourses.forEach(function(course){
   			var tutors = availableTutors[course];
   			for(var i =0; i < tutors.length; i++){
   				if(tutors[i]._id == currentUser._id){
   					console.log(tutor.firstName + " " + tutor.lastName + " is no longer available");
+  					socket.emit('availibityRemovalDone', {responseType: "removedAvailable"});
   				}
   			}
   		});
-
   });	
 });
 

@@ -261,7 +261,7 @@ io.on('connection', function (socket){
   			for(var i =0; i < tutors.length; i++){
   				if(tutors[i]._id == currentUser._id){
   					console.log(tutors[i].firstName + " " + tutors[i].lastName + " is no longer available");
-  					socket.emit('availibityRemovalDone', {responseType: "removedAvailable"});
+  					socket.emit('removeAvailableDone', {responseType: "removedAvailable"});
   				}
   			}
   		});

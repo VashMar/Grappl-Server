@@ -139,7 +139,6 @@ app.get('/courses', function(req, res){
 
 // create a map to store available tutors in each course (eventually implement redis cache)
 var availableTutors = {};
-
 // a map to store 
 var grappledTutors = {};
 
@@ -261,7 +260,7 @@ io.on('connection', function (socket){
   			var tutors = availableTutors[course];
   			for(var i =0; i < tutors.length; i++){
   				if(tutors[i]._id == currentUser._id){
-  					console.log(tutor.firstName + " " + tutor.lastName + " is no longer available");
+  					console.log(tutors[i].firstName + " " + tutors[i].lastName + " is no longer available");
   					socket.emit('availibityRemovalDone', {responseType: "removedAvailable"});
   				}
   			}

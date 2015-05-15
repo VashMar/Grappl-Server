@@ -138,11 +138,13 @@ app.get('/courses', function(req, res){
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // create a map to store available tutors in each course (eventually implement redis cache)
-var availableTutors = {},
-	availableTutors[ALL_COURSES] = []; // makes sure we can track all the available tutors at once 
+var availableTutors = {};
 
 // a map to store 
-var grappledTutors = {}
+var grappledTutors = {};
+
+
+availableTutors[ALL_COURSES] = []; // makes sure we can track all the available tutors at once 
 
 // populates the courses based on the course list 
 for(var i = 0; i < COURSE_LIST.length; i++){

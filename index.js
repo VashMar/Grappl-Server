@@ -273,7 +273,7 @@ io.on('connection', function (socket){
   		function removeTutor(tutors){
   			for(var i =0; i < tutors.length; i++){
   				if(tutors[i]._id == currentUser._id){
-  					console.log(tutors[i].firstName + " " + tutors[i].lastName + " is no longer available")
+  					tutors.splice(i,1);  // removes tutor from list 
   				}
   			}
 

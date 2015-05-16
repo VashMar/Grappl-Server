@@ -255,16 +255,30 @@ io.on('connection', function (socket){
   // removes a tutor from the availability pool for all their courses
   socket.on('removeAvailable', function(data){
 
+  		// remove tutor from pool of all 
+  		var tutors = availableTutors[ALL_COURSES];
+  		removeTutor(tutors);
 
-  		tutorCourses.forEach(function(course){
-  			var tutors = availableTutors[course];
+  		async.each(tutorCourses, function(course, callback){
+
+			tutors = availableTutors[course];
+  			removeTutor(tutors);
+  			callback();
+
+		}, function(){ // callback after done going through tutors list 
+			console.log("Remove Available Complete");
+			socket.emit('removeAvailableDone', {responseType: "removeAvailableDone"});
+		});
+
+  		function removeTutor(tutors){
   			for(var i =0; i < tutors.length; i++){
   				if(tutors[i]._id == currentUser._id){
-  					console.log(tutors[i].firstName + " " + tutors[i].lastName + " is no longer available");
-  					socket.emit('removeAvailableDone', {responseType: "removedAvailable"});
+  					console.log(tutors[i].firstName + " " + tutors[i].lastName + " is no longer available")
   				}
   			}
-  		});
+
+  		}
+
   });	
 });
 

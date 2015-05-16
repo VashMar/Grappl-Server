@@ -283,6 +283,13 @@ io.on('connection', function (socket){
 });
 
 
+// relay chat messages 
+socket.on('message', function(data){
+	console.log("Relaying Message..");
+	console.log(data);
+	io.to(data.recipID).emit('message', {messageData: data});
+});
+
 // returns true if tutor exists in list of tutors
 function tutorExists(tutors, currTutor){
 

@@ -286,6 +286,7 @@ io.on('connection', function (socket){
 		console.log("Relaying Message..");
 		console.log(data);
 		io.to(data.recipID).emit('message', {messageData: data});
+		console.log("Relaying back to sender..");
 		socket.emit('message', {messageData: data});
 	});
 

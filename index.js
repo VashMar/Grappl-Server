@@ -106,8 +106,8 @@ app.get('/tutors', function(req, res){
 
 	if(tutors){
 		async.each(tutors, function(tutor, callback){
-		var tutorLat = tutor.location.xPos;
-		var tutorLon = tutor.location.yPos;
+		var tutorLat = tutor.location.lat;
+		var tutorLon = tutor.location.lon;
 
 		console.log("Tutor Location: (" + tutorLat + "," + tutorLon + ")");
 		getDistance(reqLat, reqLon, tutorLat, tutorLon, function(distance){

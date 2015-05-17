@@ -22,8 +22,8 @@ var userSchema = new Schema({
 	studentRating: {type: Number},
 	tutorRating: {type: Number},
 	location:{
-		xPos: {type:Number}, 
-		yPos:{type:Number}
+		lat: {type:Number}, 
+		lon:{type:Number}
 	},
 	profilePic:{type:String},
 	tutor: {type:Boolean},
@@ -35,7 +35,6 @@ var userSchema = new Schema({
 		available: {type: Boolean, default: false},
 		price: {type: Number, default: 15.00},
 		travelDistance: {type: Number},
-		minLength: {type: Number, default: 30},   // minimum length of session in minutes
 		period: {type: Number, default: 45}	// availibility period in minutes 
 	}
 });
@@ -168,8 +167,8 @@ userSchema.methods.updateTutorSession = function(time, distance, price, lat, lon
 	this.tutorSession.available = time;
 	this.tutorSession.distance = distance;
 	this.tutorSession.price = price;
-	this.location.xPos = lat;
-	this.location.yPos = lon;
+	this.location.lat = lat;
+	this.location.lon = lon;
 	this.save();
 
 	next(this);
@@ -194,9 +193,9 @@ userSchema.methods.updateTutorRating = function(rating, next){
 	next(this);
 }
 
-userSchema.methods.updateLocation = function(xPos, yPos, next){
-	this.location.xPos = xPos;
-	this.location.yPos = yPos; 
+userSchema.methods.updateLocation = function(lat, lon, next){
+	this.location.lat = lat;
+	this.location.lon = lon; 
 	this.save();
 }
 

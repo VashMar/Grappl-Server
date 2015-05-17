@@ -170,47 +170,47 @@ io.use(socketioJwt.authorize({
 
 
 io.on('connection', function (socket){
-  console.log("Socket Connected! " + socket.decoded_token);
+	console.log("Socket Connected! " + socket.decoded_token);
 
-  var currentUser;				// tracks the user on this socket 
-  var socketID = socket.id;		// id of this socket 
-  var tutorCourses = [];		// if it's user is a tutor keep track of courses 
-  var connectedUser;			// whomever this user may be 
+	var currentUser;				// tracks the user on this socket 
+	var socketID = socket.id;		// id of this socket 
+	var tutorCourses = [];		// if it's user is a tutor keep track of courses 
+	var connectedUser;			// whomever this user may be 
 
-  // retrieve the user object for this socket connection 
-  User.findOne({_id: socket.decoded_token}, function(err, user){
+	// retrieve the user object for this socket connection 
+	User.findOne({_id: socket.decoded_token}, function(err, user){
 
-  	if(err){
-  		console.log(err);
-  	}
+		if(err){
+			console.log(err);
+		}
 
-  	if(user){
-  		console.log("Found User: " + JSON.stringify(user));
-  		currentUser = user; 
-  		console.log("joining room: " + currentUser.id);
- 		socket.join(currentUser.id);   // join room based on id 
-  	}
+		if(user){
+			console.log("Found User: " + JSON.stringify(user));
+			currentUser = user; 
+			console.log("joining room: " + currentUser.id);
+			socket.join(currentUser.id);   // join room based on id 
+		}
 
-  });
+	});
  
 
-  // if a tutor gets grappled remove them from the available tutors cache and add them to a grappled cache
-  socket.on('grapple', function(data){
-  	console.log("Grapple data: " + JSON.stringify(data)); 
-  	connectedUser = data.id;  // get the tutors socketID and use it to join the same room as / broadcast to the tutor socket 
-  	console.log("emitting response to room: " + connectedUser);
+	// if a tutor gets grappled remove them from the available tutors cache and add them to a grappled cache
+	socket.on('grapple', function(data){
+		console.log("Grapple data: " + JSON.stringify(data)); 
+		connectedUser = data.id;  // get the tutors socketID and use it to join the same room as / broadcast to the tutor socket 
+		console.log("emitting response to room: " + connectedUser);
 
-  	// check to see if tutor is in the available list 
-
-
-  	// return the user object who initated the grapple 
-  	io.to(connectedUser).emit('grapple', {id: currentUser.clientAccountData()});
-
-  }); 
+		// check to see if tutor is in the available list 
 
 
-  // sets a tutor as available to tutor a class 
-  socket.on('setAvailable', function(data){
+		// return the user object who initated the grapple 
+		io.to(connectedUser).emit('grapple', {id: currentUser.clientAccountData()});
+
+	}); 
+
+
+	// sets a tutor as available to tutor a class 
+	socket.on('setAvailable', function(data){
 		console.log("Setting " + currentUser.firstName + " as available..");
 
 		// // save the tutor broadcast settings 
@@ -235,12 +235,12 @@ io.on('connection', function (socket){
 				}
 			}
 		});
-  });
+	});
 
 
-  // updates the rating of other user 
-  socket.on('updateRating', function(data){
-  		console.log("Updating tutor rating..");
+	// updates the rating of other user 
+	socket.on('updateRating', function(data){
+			console.log("Updating tutor rating..");
 	  	User.find({_id:data.id}, function(err, user){
 	  	 	if(err){
 	  	 		console.log(err);
@@ -250,45 +250,49 @@ io.on('connection', function (socket){
 	  	 		user.updateTutorRating(data.rating);
 	  	 	}
 	  	});
-  });
+	});
 
-  // removes a tutor from the availability pool for all their courses
-  socket.on('removeAvailable', function(data){
+	// removes a tutor from the availability pool for all their courses
+	socket.on('removeAvailable', function(data){
 
-  		// remove tutor from pool of all 
-  		var tutors = availableTutors[ALL_COURSES];
-  		removeTutor(tutors);
+			// remove tutor from pool of all 
+			var tutors = availableTutors[ALL_COURSES];
+			removeTutor(tutors);
 
-  		async.each(tutorCourses, function(course, callback){
+			async.each(tutorCourses, function(course, callback){
 
 			tutors = availableTutors[course];
-  			removeTutor(tutors);
-  			callback();
+				removeTutor(tutors);
+				callback();
 
 		}, function(){ // callback after done going through tutors list 
 			console.log("Remove Available Complete");
 			socket.emit('removeAvailableDone', {responseType: "removeAvailableDone"});
 		});
 
-  		function removeTutor(tutors){
-  			for(var i =0; i < tutors.length; i++){
-  				if(tutors[i]._id == currentUser._id){
-  					tutors.splice(i,1);  // removes tutor from list 
-  				}
-  			}
+			function removeTutor(tutors){
+				for(var i =0; i < tutors.length; i++){
+					if(tutors[i]._id == currentUser._id){
+						tutors.splice(i,1);  // removes tutor from list 
+					}
+				}
 
-  		}
+			}
 
-  });	
-});
+	});	
+
+	  // relay chat messages 
+	socket.on('message', function(data){
+		console.log("Relaying Message..");
+		console.log(data);
+		io.to(data.recipID).emit('message', {messageData: data});
+	});
 
 
-// relay chat messages 
-socket.on('message', function(data){
-	console.log("Relaying Message..");
-	console.log(data);
-	io.to(data.recipID).emit('message', {messageData: data});
-});
+});  // socket code ends 
+
+
+/****************************************************** Helpers ******************************************************/
 
 // returns true if tutor exists in list of tutors
 function tutorExists(tutors, currTutor){

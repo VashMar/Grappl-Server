@@ -162,6 +162,8 @@ for(var i = 0; i < COURSE_LIST.length; i++){
 }
 
 
+/**************************************************************************** Socket Code ************************************************************************************/
+
 // authorize the socket connection based on passed in token 
 io.use(socketioJwt.authorize({
   secret: 't3stk3y',
@@ -176,14 +178,16 @@ io.on('connection', function (socket){
 	var socketID = socket.id;		// id of this socket 
 	var tutorCourses = [];		// if it's user is a tutor keep track of courses 
 	var connectedUser;			// whomever this user may be 
-
+	var inSession = false;  		// tracks whether the user on this socket is in a session
+	var sessionTime;			// captures time left in session (ms)
+ 
 	// retrieve the user object for this socket connection 
 	User.findOne({_id: socket.decoded_token}, function(err, user){
 
 		if(err){
 			console.log(err);
 		}
-
+ 
 		if(user){
 			console.log("Found User: " + JSON.stringify(user));
 			currentUser = user; 
@@ -238,20 +242,6 @@ io.on('connection', function (socket){
 	});
 
 
-	// updates the rating of other user 
-	socket.on('updateRating', function(data){
-			console.log("Updating tutor rating..");
-	  	User.find({_id:data.id}, function(err, user){
-	  	 	if(err){
-	  	 		console.log(err);
-	  	 	}
-	  	 	if(user){
-	  	 		console.log("Updating tutor rating");
-	  	 		user.updateTutorRating(data.rating);
-	  	 	}
-	  	});
-	});
-
 	// removes a tutor from the availability pool for all their courses
 	socket.on('removeAvailable', function(data){
 
@@ -281,13 +271,71 @@ io.on('connection', function (socket){
 
 	});	
 
-	  // relay chat messages 
+
+	// send request to start a session 
+	socket.on('sessionRequest', function(data){
+		io.to(connectedUser).emit('sessionRequest');
+	});
+
+	// start timer sync for both phones 
+	socket.on('sessionAccept', function(data){	
+		inSession = true; 
+		io.to(connectedUser).emit('startSession');
+		socket.emit('startSession');
+	});
+
+	// register that a session has started (meant for socket that sent request)
+	socket.on('sessionStarted', function(data){
+		inSession = true;
+	});
+
+	// stores session time heartbeat 
+	socket.on('sessionTime', function(data){
+		sessionTime = data.sessionTime; 
+	});
+
+	// when a session is completed clear the stored data
+	socket.on('sessionComplete', function(){
+		inSession = false; 
+		connectedUser = null; 
+
+	});
+
+
+	// updates connected user on distance from meeting point (param is distance from meeting point in miles)
+	socket.on('updateDistance', function(data){
+		io.to(connectedUser).emit('distanceUpdate', {distance: data.distance});
+	});
+
+
+	// updates the rating of other user 
+	socket.on('updateRating', function(data){
+			console.log("Updating tutor rating..");
+	  	User.find({_id:data.id}, function(err, user){
+	  	 	if(err){
+	  	 		console.log(err);
+	  	 	}
+	  	 	if(user){
+	  	 		console.log("Updating tutor rating");
+	  	 		user.updateTutorRating(data.rating);
+	  	 	}
+	  	});
+	});
+
+
+	// relay chat messages 
 	socket.on('message', function(data){
 		console.log("Relaying Message..");
 		console.log(data);
 		io.to(data.recipID).emit('message', {messageData: data});
 		console.log("Relaying back to sender..");
 		socket.emit('message', data);
+	});
+
+
+	// if disconnect handle appropriate case if in a session or in grapple 
+	socket.on('disconnect', function(){
+		io.to(connectedUser).emit('connectionLost');
 	});
 
 
@@ -298,7 +346,6 @@ io.on('connection', function (socket){
 
 // returns true if tutor exists in list of tutors
 function tutorExists(tutors, currTutor){
-
 	for( var i = 0; i < tutors.length; i++){
 		if(tutors[i]._id === currTutor._id){
 			console.log("Tutor already exists");

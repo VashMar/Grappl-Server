@@ -179,7 +179,8 @@ io.on('connection', function (socket){
 	var tutorCourses = [];		// if it's user is a tutor keep track of courses 
 	var connectedUser;			// whomever this user may be 
 	var inSession = false;  		// tracks whether the user on this socket is in a session
-	var sessionTime;			// captures time left in session (ms)
+	var clientSessionTime;			// captures time left in session (ms)
+	var serverSessionTime;		// tracks session from server side 
  
 	// retrieve the user object for this socket connection 
 	User.findOne({_id: socket.decoded_token}, function(err, user){
@@ -271,27 +272,35 @@ io.on('connection', function (socket){
 
 	});	
 
-
 	// send request to start a session 
 	socket.on('sessionRequest', function(data){
 		io.to(connectedUser).emit('sessionRequest');
 	});
 
 	// start timer sync for both phones 
-	socket.on('sessionAccept', function(data){	
-		inSession = true; 
+	socket.on('sessionAccept', function(data){	 
 		io.to(connectedUser).emit('startSession');
 		socket.emit('startSession');
 	});
 
 	// register that a session has started (meant for socket that sent request)
 	socket.on('sessionStarted', function(data){
+		serverSessionTime = data.sessionTime; 
 		inSession = true;
+		// start tracking session time
+
+		setInterval(function(){
+			serverSessionTime = serverSessionTime - 10000;	
+		}, 10000);
+
+	
 	});
 
 	// stores session time heartbeat 
 	socket.on('sessionTime', function(data){
-		sessionTime = data.sessionTime; 
+		console.log("Server Time: "  + serverSessionTime);
+		console.log("Client Time: " + serverSessionTime);
+		clientSessionTime = data.sessionTime; 
 	});
 
 	// when a session is completed clear the stored data

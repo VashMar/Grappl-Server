@@ -40,7 +40,7 @@ var userSchema = new Schema({
 			name: String,
 			lat: Number, 
 			lon: Number
-		}]
+		}],
 		period: {type: Number, default: 45}	// availibility period in minutes 
 	}
 });

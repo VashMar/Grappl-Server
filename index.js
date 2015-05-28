@@ -297,7 +297,7 @@ io.on('connection', function (socket){
 		serverSessionTime = data.sessionTime; 
 		inSession = true;
 		// start tracking session time
-
+java object array to json
 		setInterval(function(){
 			serverSessionTime = serverSessionTime - 10000;	
 		}, 10000);

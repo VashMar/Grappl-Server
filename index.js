@@ -6,7 +6,7 @@ var socketioJwt = require('socketio-jwt');
 
 var database = process.env.MONGOLAB_URI || 
                process.env.MONGOHQ_URL  ||
-               "mongodb://localhost:27017/tuber_dev";
+               "mongodb://localhost:27017/grappl_dev";
 
 var port = process.env.PORT || 4000;
 var io = require('socket.io');
@@ -135,6 +135,12 @@ app.get('/courses', function(req, res){
 });
 
 
+app.get('/locations', function(req, res){
+	
+});
+
+
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // create a map to store available tutors in each course (eventually implement redis cache)
@@ -218,6 +224,8 @@ io.on('connection', function (socket){
 	socket.on('setAvailable', function(data){
 		console.log("Setting " + currentUser.firstName + " as available..");
 
+		console.log("Meeting Spots:" + JSON.stringify(data.meetingSpots));
+
 		// // save the tutor broadcast settings 
 		currentUser.updateTutorSession(data.time, data.distance, data.price, data.lat, data.lon, function(tutor){
 
@@ -270,7 +278,8 @@ io.on('connection', function (socket){
 
 			}
 
-	});	
+	});
+
 
 	// send request to start a session 
 	socket.on('sessionRequest', function(data){

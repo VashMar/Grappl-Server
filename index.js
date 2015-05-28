@@ -224,10 +224,10 @@ io.on('connection', function (socket){
 	socket.on('setAvailable', function(data){
 		console.log("Setting " + currentUser.firstName + " as available..");
 
-		console.log("Meeting Spots:" + data.meetingSpots[0]);
+		console.log("Meeting Spots:" + data.meetingSpots[0].address);
 
 		// // save the tutor broadcast settings 
-		currentUser.updateTutorSession(data.time, data.distance, data.price, data.lat, data.lon, function(tutor){
+		currentUser.updateTutorSession(data.time, data.meetingSpots, data.price, data.lat, data.lon, function(tutor){
 
 			currentUser = tutor; // update our version of currUser so it's same as DB 
 			tutorCourses = data.courses; // updates tutors current course list   

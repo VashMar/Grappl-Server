@@ -16,7 +16,7 @@ var isEmail = validate({
 
 var userSchema = new Schema({
 	firstName: {type:String},
-	lastName: {type:String},
+	lastName: {type:String}, 
 	email: {type: String, unique: true, required: true, validate: isEmail},
 	password: {type: String},
 	studentRating: {type: Number},
@@ -35,6 +35,12 @@ var userSchema = new Schema({
 		available: {type: Boolean, default: false},
 		price: {type: Number, default: 15.00},
 		travelDistance: {type: Number},
+		meetingSpots:[{
+			address: String, 
+			name: String,
+			lat: Number, 
+			lon: Number
+		}]
 		period: {type: Number, default: 45}	// availibility period in minutes 
 	}
 });
@@ -163,9 +169,9 @@ userSchema.methods.clientTutorData = function(distance, next){
 
 
 // adds session info and returns the tutor 
-userSchema.methods.updateTutorSession = function(time, distance, price, lat, lon, next){
+userSchema.methods.updateTutorSession = function(time, meetingSpots, price, lat, lon, next){
 	this.tutorSession.available = time;
-	this.tutorSession.distance = distance;
+	this.tutorSession.meetingSpots = meetingSpots;
 	this.tutorSession.price = price;
 	this.location.lat = lat;
 	this.location.lon = lon;

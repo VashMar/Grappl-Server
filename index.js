@@ -224,7 +224,7 @@ io.on('connection', function (socket){
 	socket.on('setAvailable', function(data){
 		console.log("Setting " + currentUser.firstName + " as available..");
 
-		console.log("Meeting Spots:" + JSON.stringify(data.meetingSpots));
+		console.log("Meeting Spots:" + data.meetingSpots[0]);
 
 		// // save the tutor broadcast settings 
 		currentUser.updateTutorSession(data.time, data.distance, data.price, data.lat, data.lon, function(tutor){

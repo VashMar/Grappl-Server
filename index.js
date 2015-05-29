@@ -222,35 +222,44 @@ io.on('connection', function (socket){
 
 	// sets a tutor as available to tutor a class 
 	socket.on('setAvailable', function(data){
-		var meetingSpots = JSON.parse(data.meetingSpots);
-		console.log("Setting " + currentUser.firstName + " as available..");
-		console.log("Data: " + data);
-		console.log("Meeting Spots:" + eetingSpots);
-		console.log("First Meeting Spot:" + meetingSpots[0]);
-		console.log("Meeting Spot Address:" + meetingSpots[0].address);
+		var meetingSpots = [];
 
-		// // save the tutor broadcast settings 
-		currentUser.updateTutorSession(data.time, data.meetingSpots, data.price, data.lat, data.lon, function(tutor){
+		// convert the meeting spots to JSON
+		for(var i =0; i < data.meetingSpots.length; i++){
+			meetingSpots.push(JSON.parse(data.meetingSpots[i]));
 
-			currentUser = tutor; // update our version of currUser so it's same as DB 
-			tutorCourses = data.courses; // updates tutors current course list   
-
-			// add the tutor to the available list for all courses if they don't exist 
-			if(!tutorExists(availableTutors[ALL_COURSES], currentUser)){
-				availableTutors[ALL_COURSES].push(currentUser);	
+			if(i == data.meetingSpots.length - 1){
+				updateSession();
 			}
+		}
+		
 
-			// add the tutor to the available list for appropriate courses 
-			for(var i = 0; i < tutorCourses.length; i++){
+		function updateSession(){
+			// save the tutor broadcast settings 
+			currentUser.updateTutorSession(data.time, meetingSpots, data.price, data.lat, data.lon, function(tutor){
 
-				var tutors = availableTutors[tutorCourses[i]];
-				if(!tutorExists(tutors, currentUser)){
-					tutors.push(currentUser);
-					console.log(currentUser.firstName +  " added to course " + tutorCourses[i]);
-					console.log("Available Tutors: " + availableTutors[tutorCourses[i]]);
+				currentUser = tutor; // update our version of currUser so it's same as DB 
+				tutorCourses = data.courses; // updates tutors current course list   
+
+				// add the tutor to the available list for all courses if they don't exist 
+				if(!tutorExists(availableTutors[ALL_COURSES], currentUser)){
+					availableTutors[ALL_COURSES].push(currentUser);	
 				}
-			}
-		});
+
+				// add the tutor to the available list for appropriate courses 
+				for(var i = 0; i < tutorCourses.length; i++){
+
+					var tutors = availableTutors[tutorCourses[i]];
+					if(!tutorExists(tutors, currentUser)){
+						tutors.push(currentUser);
+						console.log(currentUser.firstName +  " added to course " + tutorCourses[i]);
+						console.log("Available Tutors: " + availableTutors[tutorCourses[i]]);
+					}
+				}
+
+			});		 
+		}
+
 	});
 
 

@@ -176,7 +176,7 @@ userSchema.methods.updateTutorSession = function(time, meetingSpots, price, lat,
 	this.tutorSession.price = price;
 	this.location.lat = lat;
 	this.location.lon = lon;
-	this.save(functon(err){
+	this.save(function(err){
 		if(err){console.log(err);}
 	});
 
@@ -192,6 +192,7 @@ userSchema.methods.updateStudentRating = function(rating, next){
 }
 
 
+ 
 // averages newly sent rating with old rating to get updated rating 
 userSchema.methods.updateTutorRating = function(rating, next){
 	this.tutorRating =  (this.tutoRating + rating)/2 ; 

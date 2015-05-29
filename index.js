@@ -226,7 +226,7 @@ io.on('connection', function (socket){
 		console.log("Data: " + data);
 		console.log("Meeting Spots:" + data.meetingSpots);
 		console.log("First Meeting Spot:" + data.meetingSpots[0]);
-		console.log("Meeting Spot Address:" + data.meetingSpots[0].address);
+		console.log("Meeting Spot Address:" + JSON.parse(data.meetingSpots[0]).address);
 
 		// // save the tutor broadcast settings 
 		currentUser.updateTutorSession(data.time, data.meetingSpots, data.price, data.lat, data.lon, function(tutor){

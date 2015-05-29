@@ -170,12 +170,15 @@ userSchema.methods.clientTutorData = function(distance, next){
 
 // adds session info and returns the tutor 
 userSchema.methods.updateTutorSession = function(time, meetingSpots, price, lat, lon, next){
+	console.log("Updating Session... " + meetingSpots );
 	this.tutorSession.available = time;
 	this.tutorSession.meetingSpots = meetingSpots;
 	this.tutorSession.price = price;
 	this.location.lat = lat;
 	this.location.lon = lon;
-	this.save();
+	this.save(functon(err){
+		if(err){console.log(err);}
+	});
 
 	next(this);
 }
@@ -203,6 +206,7 @@ userSchema.methods.updateLocation = function(lat, lon, next){
 	this.location.lat = lat;
 	this.location.lon = lon; 
 	this.save();
+
 }
 
 userSchema.methods.updateStudentCourses = function(courses, next){

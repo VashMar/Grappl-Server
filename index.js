@@ -223,7 +223,9 @@ io.on('connection', function (socket){
 	// sets a tutor as available to tutor a class 
 	socket.on('setAvailable', function(data){
 		console.log("Setting " + currentUser.firstName + " as available..");
+		console.log("Data: " + data);
 		console.log("Meeting Spots:" + data.meetingSpots);
+		console.log("First Meeting Spot:" + data.meetingSpots[0]);
 		console.log("Meeting Spot Address:" + data.meetingSpots[0].address);
 
 		// // save the tutor broadcast settings 

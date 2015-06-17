@@ -30,6 +30,8 @@ var errHandle = require("./Helpers/errorHandler");
 io = io.listen(http.createServer(app).listen(port));
 
 
+console.log("Launching server at.. " + new Date());
+
 // establish db connection
 mongoose.connect(database, function(err, res){
   if(err){console.log('ERROR connecting to: ' + database + ': ' + err );}
@@ -101,7 +103,7 @@ app.get('/tutors', function(req, res){
 	var reqLon = req.query.lon;
 
 	console.log("Getting available tutors for " + course + "at :(" +  reqLat + "," + reqLon +")");
-	var tutors = availableTutors[course];
+	var tutors = broadcastingTutors[course];
 	var nearbyTutors = [];
 
 	if(tutors){
@@ -144,12 +146,12 @@ app.get('/locations', function(req, res){
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // create a map to store available tutors in each course (eventually implement redis cache)
-var availableTutors = {};
-// a map to store 
-var grappledTutors = {};
+var broadcastingTutors = {};
+// a map to store tutors that have been grappled by course 
+var grappledTutors = {}; 
 
 
-availableTutors[ALL_COURSES] = []; // makes sure we can track all the available tutors at once 
+broadcastingTutors[ALL_COURSES] = []; // makes sure we can track all the available tutors at once 
 
 // populates the courses based on the course list 
 for(var i = 0; i < COURSE_LIST.length; i++){
@@ -164,7 +166,7 @@ for(var i = 0; i < COURSE_LIST.length; i++){
 		}
 	});
 
-	availableTutors[courseName] = [];
+	broadcastingTutors[courseName] = [];
 }
 
 
@@ -240,20 +242,22 @@ io.on('connection', function (socket){
 
 				currentUser = tutor; // update our version of currUser so it's same as DB 
 				tutorCourses = data.courses; // updates tutors current course list   
+				console.log("Start Time:" + data.startTime);
+				console.log("Current Time: " + new Date().getTime());
 
 				// add the tutor to the available list for all courses if they don't exist 
-				if(!tutorExists(availableTutors[ALL_COURSES], currentUser)){
-					availableTutors[ALL_COURSES].push(currentUser);	
+				if(!tutorExists(broadcastingTutors[ALL_COURSES], currentUser)){
+					broadcastingTutors[ALL_COURSES].push(currentUser);	
 				}
 
 				// add the tutor to the available list for appropriate courses 
 				for(var i = 0; i < tutorCourses.length; i++){
 
-					var tutors = availableTutors[tutorCourses[i]];
+					var tutors = broadcastingTutors[tutorCourses[i]];
 					if(!tutorExists(tutors, currentUser)){
 						tutors.push(currentUser);
 						console.log(currentUser.firstName +  " added to course " + tutorCourses[i]);
-						console.log("Available Tutors: " + availableTutors[tutorCourses[i]]);
+						console.log("Available Tutors: " + broadcastingTutors[tutorCourses[i]]);
 					}
 				}
 
@@ -267,12 +271,12 @@ io.on('connection', function (socket){
 	socket.on('removeAvailable', function(data){
 
 			// remove tutor from pool of all 
-			var tutors = availableTutors[ALL_COURSES];
+			var tutors = broadcastingTutors[ALL_COURSES];
 			removeTutor(tutors);
 
 			async.each(tutorCourses, function(course, callback){
 
-			tutors = availableTutors[course];
+			tutors = broadcastingTutors[course];
 				removeTutor(tutors);
 				callback();
 

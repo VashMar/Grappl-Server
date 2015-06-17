@@ -41,7 +41,8 @@ var userSchema = new Schema({
 			lat: Number, 
 			lon: Number
 		}],
-		period: {type: Number, default: 45}	// availibility period in minutes 
+		period: {type: Number, default: 45},	// availibility period in minutes 
+		startTime: {type: Number} // start date & time in ms 
 	}
 });
 

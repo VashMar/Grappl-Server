@@ -158,6 +158,9 @@ userSchema.methods.clientTutorData = function(distance, next){
 	var tutorData = {};
 
 	// check availability on the fly because it's always changing 
+	console.log("Start time: " +  this.tutorSession.startTime);
+	console.log("Get time: " + new Date().getTime());
+	console.log("Available?:" new Date().getTime() > this.tutorSession.startTime);
 	if(new Date().getTime() > this.tutorSession.startTime){
 		this.tutorSession.available = true; 
 		this.save();

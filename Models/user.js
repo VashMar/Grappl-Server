@@ -33,6 +33,7 @@ var userSchema = new Schema({
 	messages: {type: ObjectId, ref: 'Message'},
 	tutorSession:{			// the information the tutor will set per broadcasted session
 		available: {type: Boolean, default: false},
+		broadcasting: {type: Boolean, default:false},
 		price: {type: Number, default: 15.00},
 		travelDistance: {type: Number},
 		meetingSpots:[{
@@ -157,7 +158,7 @@ userSchema.methods.clientTutorData = function(distance, next){
 	var tutorData = {};
 
 	// check availability on the fly because it's always changing 
-	if(new Date().getTime() <= this.tutorSession.startTime){
+	if(new Date().getTime() > this.tutorSession.startTime){
 		this.tutorSession.available = true; 
 		this.save();
 	}
@@ -179,6 +180,7 @@ userSchema.methods.clientTutorData = function(distance, next){
 userSchema.methods.setUnavailable = function(){
 	console.log("Removing tutor availability..");
 	this.tutorSession.available = false;
+	this.tutorSession.broadcasting = false; 
 	this.save();
 
 }
@@ -191,8 +193,9 @@ userSchema.methods.updateTutorSession = function(startTime, period, meetingSpots
 	this.tutorSession.period = period;
 	this.tutorSession.meetingSpots = meetingSpots;
 	this.tutorSession.price = price;
+	this.tutorSession.broadcasting = true;
 	this.location.lat = lat;
-	this.location.lon = lon;
+	this.location.lon = lon; 
 	this.save(function(err){
 		if(err){console.log(err);}
 	});

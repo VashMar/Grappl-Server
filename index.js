@@ -295,8 +295,8 @@ io.on('connection', function (socket){
 			function removeTutor(tutors){
 				for(var i =0; i < tutors.length; i++){
 					if(tutors[i]._id == currentUser._id){
-						tutors.splice(i,1);  // removes tutor from list 
 						tutors[i].setUnavailable();
+						tutors.splice(i,1);  // removes tutor from list 
 					}
 				}
 

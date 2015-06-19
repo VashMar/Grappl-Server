@@ -284,8 +284,8 @@ io.on('connection', function (socket){
 			async.each(tutorCourses, function(course, callback){
 
 			tutors = broadcastingTutors[course];
-				removeTutor(tutors);
-				callback();
+			removeTutor(tutors);
+			callback();
 
 		}, function(){ // callback after done going through tutors list 
 			console.log("Remove Available Complete");

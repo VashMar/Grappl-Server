@@ -74,6 +74,7 @@ app.post("/login", function(req, res){
 var jwtSecret = "t3stk3y";
 
 app.post("/signup", function(req, res){
+	console.log("Sign up hit");
 	// take in credentials 
 	var first = req.body.first;
 	var last = req.body.last; 

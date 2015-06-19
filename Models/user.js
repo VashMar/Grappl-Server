@@ -156,6 +156,11 @@ userSchema.methods.clientAccountData = function(){
 userSchema.methods.clientTutorData = function(distance, next){
 	var tutorData = {};
 
+	if(new Date().getTime() <= this.tutorSession.startTime){
+		this.tutorSession.available = true; 
+		this.save();
+	}
+
 	tutorData.id = this.id;          
 	tutorData.firstName = this.firstName;
 	tutorData.lastName = this.lastName;
@@ -170,9 +175,11 @@ userSchema.methods.clientTutorData = function(distance, next){
 
 
 // adds session info and returns the tutor 
-userSchema.methods.updateTutorSession = function(time, meetingSpots, price, lat, lon, next){
+userSchema.methods.updateTutorSession = function(startTime, length, meetingSpots, price, lat, lon, next){
 	console.log("Updating Session... " + meetingSpots );
-	this.tutorSession.available = time;
+	
+	this.tutorSession.startTime = startTime;
+	this.tutorSession.available = length;
 	this.tutorSession.meetingSpots = meetingSpots;
 	this.tutorSession.price = price;
 	this.location.lat = lat;

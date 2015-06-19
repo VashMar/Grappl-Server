@@ -122,7 +122,15 @@ app.get('/tutors', function(req, res){
 
 		}, function(){ // callback after done going through tutors list 
 			console.log("Tutors nearby: " + nearbyTutors);
-			res.json(nearbyTutors);
+
+			//sort then return 
+			async.series([
+				nearbyTutors.sort(function(a, b) { 
+    				return a.startTime - b.startTime;
+				}),
+				res.json(nearbyTutors)
+			]);
+			
 		});
 
 	}else{
@@ -238,7 +246,7 @@ io.on('connection', function (socket){
 
 		function updateSession(){
 			// save the tutor broadcast settings 
-			currentUser.updateTutorSession(data.time, meetingSpots, data.price, data.lat, data.lon, function(tutor){
+			currentUser.updateTutorSession(data.startTime, data.time, meetingSpots, data.price, data.lat, data.lon, function(tutor){
 
 				currentUser = tutor; // update our version of currUser so it's same as DB 
 				tutorCourses = data.courses; // updates tutors current course list   

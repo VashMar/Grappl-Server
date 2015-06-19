@@ -193,7 +193,7 @@ userSchema.methods.updateTutorSession = function(startTime, length, meetingSpots
 	this.tutorSession.price = price;
 	this.location.lat = lat;
 	this.location.lon = lon;
-	this.save(function(err)
+	this.save(function(err){
 		if(err){console.log(err);}
 	});
 

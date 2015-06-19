@@ -178,7 +178,7 @@ userSchema.methods.clientTutorData = function(distance, next){
 // removes a tutor from being seen as available 
 userSchema.methods.setUnavailable = function(){
 	console.log("Removing tutor availability..");
-	this.session.available = false;
+	this.tutorSession.available = false;
 	this.save();
 
 }
@@ -193,7 +193,7 @@ userSchema.methods.updateTutorSession = function(startTime, length, meetingSpots
 	this.tutorSession.price = price;
 	this.location.lat = lat;
 	this.location.lon = lon;
-	this.save(function(err){
+	this.save(function(err)
 		if(err){console.log(err);}
 	});
 

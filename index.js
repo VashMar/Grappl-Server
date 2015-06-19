@@ -126,9 +126,7 @@ app.get('/tutors', function(req, res){
 
 			//sort then return 
 			async.series([
-				nearbyTutors.sort(function(a, b) { 
-    				return a.startTime - b.startTime;
-				}),
+				timeSortTutors(nearbyTutors),
 				res.json(nearbyTutors)
 			]);
 			
@@ -397,6 +395,17 @@ function tutorExists(tutors, currTutor){
 			return false; 
 		}
 	}
+}
+
+
+function timeSortTutors(tutors){
+	if(tutors.length < 1){
+		return;
+	}
+
+	tutors.sort(function(a, b) { 
+    	return a.startTime - b.startTime;
+	});
 }
 
 

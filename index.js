@@ -245,10 +245,11 @@ io.on('connection', function (socket){
 
 		function updateSession(){
 			// save the tutor broadcast settings 
-			currentUser.updateTutorSession(data.startTime, data.maxLength, meetingSpots, data.price, data.lat, data.lon, function(tutor){
+			currentUser.updateTutorSession(data.startTime, data.period, meetingSpots, data.price, data.lat, data.lon, function(tutor){
 
 				currentUser = tutor; // update our version of currUser so it's same as DB 
 				tutorCourses = data.courses; // updates tutors current course list   
+				console.log("Period:" + data.period);
 				console.log("Start Time:" + data.startTime);
 				console.log("Current Time: " + new Date().getTime());
 

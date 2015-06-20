@@ -454,12 +454,14 @@ function timeSortTutors(tutors){
 
 // returns a course by name 
 function findCourse(courseName){
+	console.log("Finding course: " + courseName + " in " + JSON.stringify(allCourses));
 	for(var i =0; i < allCourses.length; i++){
 		if(allCourses[i].name == courseName){
 			return allCourses[i];
 		}
 
 		if(i == allCourses.length - 1){
+			console.log("Course not found");
 			return null; // if course not found 
 		}
 	}

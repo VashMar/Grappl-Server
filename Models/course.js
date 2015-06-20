@@ -22,6 +22,7 @@ courseSchema.statics.getAll = function(next){
 
 // adds a tutor to the given course
 courseSchema.methods.addTutor = function(user){
+	console.log("Adding tutor..");
 	for(var i = 0; i < this.tutors.length; i++){
 		if(!tutorExists(this.tutors, user)){
 			console.log("Saving tutor to course..");

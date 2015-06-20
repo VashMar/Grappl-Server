@@ -342,7 +342,7 @@ io.on('connection', function (socket){
 				for(var i =0; i < tutors.length; i++){
 					console.log("Removing tutor..");
 					console.log("Tutor id: " + tutors[i]._id);
-					console.log("User id: " + currUser._id);
+					console.log("User id: " + currentUser._id);
 					console.log(tutors[i]._id == currentUser._id);
 					console.log(tutors[i].id == currentUser.id);
 					if(tutors[i]._id == currentUser._id){

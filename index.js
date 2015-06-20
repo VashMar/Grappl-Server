@@ -94,7 +94,7 @@ app.post("/signup", function(req, res){
 });
 
 
-// return nearby available tutors
+// return nearby broadcasting tutors
 app.get('/tutors', function(req, res){
 
 	var course = req.query.course;
@@ -103,7 +103,7 @@ app.get('/tutors', function(req, res){
 	var reqLat = req.query.lat;
 	var reqLon = req.query.lon;
 
-	console.log("Getting available tutors for " + course + "at :(" +  reqLat + "," + reqLon +")");
+	console.log("Getting broadcasting tutors for " + course + "at :(" +  reqLat + "," + reqLon +")");
 	var tutors = broadcastingTutors[course];
 	var nearbyTutors = [];
 
@@ -133,6 +133,7 @@ app.get('/tutors', function(req, res){
 		});
 
 	}else{
+		console.log("no ones broadcasting");
 		res.json(nearbyTutors);
 	}
 
@@ -156,25 +157,54 @@ app.get('/locations', function(req, res){
 var broadcastingTutors = {};
 // a map to store tutors that have been grappled by course 
 var grappledTutors = {}; 
+var allCourses = [];
 
 
 broadcastingTutors[ALL_COURSES] = []; // makes sure we can track all the available tutors at once 
 
-// populates the courses based on the course list 
-for(var i = 0; i < COURSE_LIST.length; i++){
+// loads all the broadcasting tutors for each course 
+Course.getAll(function(courses){
+	allCourses = courses; 
 
-	var courseName = COURSE_LIST[i];
-	var course = new Course({name: courseName});
+	//retrieve tutors for each course 
+	allCourses.forEach(function(course){
+		console.log("Loading tutors for " + course.name + "..");
 
-	console.log("Adding course: " + courseName );
-	course.save(function(err){
-		if(err){
-			console.log(err);
-		}
+		// sets the tutor list per course 
+		var tutors = course.tutors;
+		broadcastingTutors[course.name] = tutors;
+
+		// goes through all tutors, if tutor doesnt exist in broadcasting list, add them
+		tutors.forEach(function(tutor){
+			if(!tutorExists(broadcastingTutors[ALL_COURSES], tutor)){
+				broadcastingTutors[ALL_COURSES].push(tutor);
+			}
+		});
 	});
 
-	broadcastingTutors[courseName] = [];
-}
+
+	if(COURSE_LIST.length != allCourses.length){
+		// populates the courses based on the course list 
+		for(var i = 0; i < COURSE_LIST.length; i++){
+
+			var courseName = COURSE_LIST[i];
+			var course = new Course({name: courseName});
+
+			console.log("Adding course: " + courseName );
+			course.save(function(err){
+				if(err){
+					console.log(err);
+				}
+			});
+
+			broadcastingTutors[courseName] = [];
+		}
+
+	}
+});
+
+
+
 
 
 /**************************************************************************** Socket Code ************************************************************************************/
@@ -266,12 +296,18 @@ io.on('connection', function (socket){
 						tutors.push(currentUser);
 						console.log(currentUser.firstName +  " added to course " + tutorCourses[i]);
 						console.log("Available Tutors: " + broadcastingTutors[tutorCourses[i]]);
+
+						// store to db 
+						var course = findCourse(tutorCourses[i]);
+						if(course){
+							course.addTutor(currentUser);
+						}
+
 					}
 				}
 
 			});		 
 		}
-
 	});
 
 
@@ -284,9 +320,15 @@ io.on('connection', function (socket){
 
 			async.each(tutorCourses, function(course, callback){
 
-			tutors = broadcastingTutors[course];
-			removeTutor(tutors);
-			callback();
+				// remove tutor from every course they are in 
+				tutors = broadcastingTutors[course];
+				removeTutor(tutors);
+
+				// update the db
+				var courseObj = findCourse(course);
+				courseObj.removeTutor(currentUser);
+
+				callback();
 
 		}, function(){ // callback after done going through tutors list 
 			console.log("Remove Available Complete");
@@ -408,6 +450,19 @@ function timeSortTutors(tutors){
 	tutors.sort(function(a, b) { 
     	return a.startTime - b.startTime;
 	});
+}
+
+// returns a course by name 
+function findCourse(courseName){
+	for(var i =0; i < allCourses.length; i++){
+		if(allCourses[i].name == courseName){
+			return allCourses[i];
+		}
+
+		if(i == courses.length - 1){
+			return null; // if course not found 
+		}
+	}
 }
 
 

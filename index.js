@@ -237,6 +237,7 @@ io.on('connection', function (socket){
 		if(user){
 			console.log("Found User: " + JSON.stringify(user));
 			currentUser = user; 
+			tutorCourses = currentUser.tutorCourses;
 			console.log("joining room: " + currentUser.id);
 			socket.join(currentUser.id);   // join room based on id 
 		}
@@ -279,7 +280,8 @@ io.on('connection', function (socket){
 
 				currentUser = tutor; // update our version of currUser so it's same as DB 
 				tutorCourses = data.courses; // updates tutors current course list   
-		
+				currentUser.tutorCourses = tutorCourses; 
+				currentUser.save();
 
 				// add the tutor to the available list for all courses if they don't exist 
 				if(!tutorExists(broadcastingTutors[ALL_COURSES], currentUser)){
@@ -334,6 +336,7 @@ io.on('connection', function (socket){
 				callback();
 
 		}, function(){ // callback after done going through tutors list 
+			tutorCourses = []; //empty the list of tutorCourses 
 			console.log("Remove Available Complete");
 			socket.emit('removeAvailableDone', {responseType: "removeAvailableDone"});
 		});

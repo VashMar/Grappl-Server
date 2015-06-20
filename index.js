@@ -344,8 +344,9 @@ io.on('connection', function (socket){
 					console.log("userID:" + currentUser.id);
 					if(tutors[i].id == currentUser.id){
 						tutors[i].setUnavailable();
-						console.log("Removing tutor..");
+						console.log("Removing tutor: " + JSON.stringify(tutors));
 						tutors.splice(i,1);  // removes tutor from list 
+						console.log("Tutor Removed: " + JSON.stringify(tutors));
 					}
 				}
 

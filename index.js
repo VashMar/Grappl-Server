@@ -279,9 +279,7 @@ io.on('connection', function (socket){
 
 				currentUser = tutor; // update our version of currUser so it's same as DB 
 				tutorCourses = data.courses; // updates tutors current course list   
-				console.log("Period:" + data.period);
-				console.log("Start Time:" + data.startTime);
-				console.log("Current Time: " + new Date().getTime());
+		
 
 				// add the tutor to the available list for all courses if they don't exist 
 				if(!tutorExists(broadcastingTutors[ALL_COURSES], currentUser)){
@@ -292,6 +290,9 @@ io.on('connection', function (socket){
 				for(var i = 0; i < tutorCourses.length; i++){
 
 					var tutors = broadcastingTutors[tutorCourses[i]];
+					console.log("Current tutors for " + tutorCourses[i] + ": " + JSON.stringify(tutors));
+					console.log("Adding: " + JSON.stringify(currentUser));
+					
 					if(!tutorExists(tutors, currentUser)){
 						tutors.push(currentUser);
 						console.log(currentUser.firstName +  " added to course " + tutorCourses[i]);
@@ -343,6 +344,7 @@ io.on('connection', function (socket){
 				for(var i =0; i < tutors.length; i++){
 					if(tutors[i]._id == currentUser._id){
 						tutors[i].setUnavailable();
+						console.log("Removing tutor..");
 						tutors.splice(i,1);  // removes tutor from list 
 					}
 				}
@@ -458,7 +460,6 @@ function timeSortTutors(tutors){
 
 // returns a course by name 
 function findCourse(courseName){
-	console.log("Finding course: " + courseName + " in " + JSON.stringify(allCourses));
 	for(var i =0; i < allCourses.length; i++){
 		if(allCourses[i].name == courseName){
 			return allCourses[i];

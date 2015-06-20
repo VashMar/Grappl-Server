@@ -22,7 +22,7 @@ courseSchema.statics.getAll = function(next){
 
 // adds a tutor to the given course
 courseSchema.methods.addTutor = function(user){
-	console.log("Adding tutor..");
+	console.log("Adding tutor to list.." + JSON.stringify(this.tutors));
 	for(var i = 0; i < this.tutors.length; i++){
 		if(!tutorExists(this.tutors, user)){
 			console.log("Saving tutor to course..");
@@ -52,7 +52,7 @@ function tutorExists(tutors, currTutor){
 			console.log("Tutor already exists");
 			return true;
 		}
-		if(i == tutors.length-1){
+		if(i === tutors.length-1){
 			return false; 
 		}
 	}

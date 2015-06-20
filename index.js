@@ -328,7 +328,7 @@ io.on('connection', function (socket){
 				removeTutor(tutors);
 
 				// update the db
-				var courseObj = findCourse(course);
+				var courseObj = indCourse(course);
 				courseObj.save();
 
 				callback();
@@ -340,6 +340,8 @@ io.on('connection', function (socket){
 
 			function removeTutor(tutors){
 				for(var i =0; i < tutors.length; i++){
+					console.log("tutorID:" + tutors[i].id);
+					console.log("userID:" + currentUser.id);
 					if(tutors[i].id == currentUser.id){
 						tutors[i].setUnavailable();
 						console.log("Removing tutor..");

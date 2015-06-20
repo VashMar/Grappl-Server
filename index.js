@@ -459,7 +459,7 @@ function findCourse(courseName){
 			return allCourses[i];
 		}
 
-		if(i == courses.length - 1){
+		if(i == allCourses.length - 1){
 			return null; // if course not found 
 		}
 	}

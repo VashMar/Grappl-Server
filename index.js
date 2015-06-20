@@ -290,13 +290,11 @@ io.on('connection', function (socket){
 				for(var i = 0; i < tutorCourses.length; i++){
 
 					var tutors = broadcastingTutors[tutorCourses[i]];
-					console.log("Current tutors for " + tutorCourses[i] + ": " + JSON.stringify(tutors));
-					console.log("Adding: " + JSON.stringify(currentUser));
 					
+
 					if(!tutorExists(tutors, currentUser)){
 						tutors.push(currentUser);
 						console.log(currentUser.firstName +  " added to course " + tutorCourses[i]);
-						console.log("Available Tutors: " + broadcastingTutors[tutorCourses[i]]);
 
 						// store to db 
 						var course = findCourse(tutorCourses[i]);
@@ -342,7 +340,12 @@ io.on('connection', function (socket){
 
 			function removeTutor(tutors){
 				for(var i =0; i < tutors.length; i++){
+					console.log("Removing tutor..");
 					if(tutors[i]._id == currentUser._id){
+						console.log("Tutor id: " + tutors[i]._id);
+						console.log("User id: " + currUser._id);
+						console.log(tutors[i]._id == currentUser._id);
+						console.log(tutors[i].id == currentUser.id);
 						tutors[i].setUnavailable();
 						console.log("Removing tutor..");
 						tutors.splice(i,1);  // removes tutor from list 
@@ -437,6 +440,8 @@ io.on('connection', function (socket){
 // returns true if tutor exists in list of tutors
 function tutorExists(tutors, currTutor){
 	for( var i = 0; i < tutors.length; i++){
+		console.log("Tutor id:" + tutors[i]._id);
+		console.log("Match id: " + currTutor._id);
 		if(tutors[i]._id === currTutor._id){
 			console.log("Tutor already exists");
 			return true;

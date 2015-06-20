@@ -173,6 +173,7 @@ Course.getAll(function(courses){
 		// sets the tutor list per course 
 		var tutors = course.tutors;
 		broadcastingTutors[course.name] = tutors;
+		console.log(course.name + "'s tutors: " + JSON.stringify(tutors));
 
 		// goes through all tutors, if tutor doesnt exist in broadcasting list, add them
 		tutors.forEach(function(tutor){
@@ -182,25 +183,24 @@ Course.getAll(function(courses){
 		});
 	});
 
+	// if(COURSE_LIST.length != allCourses.length){
+	// 	// populates the courses based on the course list 
+	// 	for(var i = 0; i < COURSE_LIST.length; i++){
 
-	if(COURSE_LIST.length != allCourses.length){
-		// populates the courses based on the course list 
-		for(var i = 0; i < COURSE_LIST.length; i++){
+	// 		var courseName = COURSE_LIST[i];
+	// 		var course = new Course({name: courseName});
 
-			var courseName = COURSE_LIST[i];
-			var course = new Course({name: courseName});
+	// 		console.log("Adding course: " + courseName );
+	// 		course.save(function(err){
+	// 			if(err){
+	// 				console.log(err);
+	// 			}
+	// 		});
 
-			console.log("Adding course: " + courseName );
-			course.save(function(err){
-				if(err){
-					console.log(err);
-				}
-			});
+	// 		broadcastingTutors[courseName] = [];
+	// 	}
 
-			broadcastingTutors[courseName] = [];
-		}
-
-	}
+	// }
 });
 
 

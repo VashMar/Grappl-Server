@@ -300,7 +300,11 @@ io.on('connection', function (socket){
 						// store to db 
 						var course = findCourse(tutorCourses[i]);
 						if(course){
-							course.addTutor(currentUser);
+							course.save(function(err){
+								if(err){
+									console.log(err);
+								}
+							});
 						}
 
 					}

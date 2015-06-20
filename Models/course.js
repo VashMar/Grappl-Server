@@ -36,7 +36,7 @@ courseSchema.methods.addTutor = function(user){
 courseSchema.methods.removeTutor = function(user){
 	var tutors = this.tutors; 
 	for(var i =0; i < tutors.length; i++){
-		if(tutors[i]._id == user._id){
+		if(tutors[i].id == user.id){
 			tutors[i].setUnavailable();
 			console.log("Removing tutor from course..");
 			tutors.splice(i,1);  // removes tutor from list 

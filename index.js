@@ -340,11 +340,6 @@ io.on('connection', function (socket){
 
 			function removeTutor(tutors){
 				for(var i =0; i < tutors.length; i++){
-					console.log("Removing tutor..");
-					console.log("Tutor id: " + tutors[i]._id);
-					console.log("User id: " + currentUser._id);
-					console.log(tutors[i]._id == currentUser._id);
-					console.log(tutors[i].id == currentUser.id);
 					if(tutors[i].id == currentUser.id){
 						tutors[i].setUnavailable();
 						console.log("Removing tutor..");
@@ -440,11 +435,6 @@ io.on('connection', function (socket){
 // returns true if tutor exists in list of tutors
 function tutorExists(tutors, currTutor){
 	for( var i = 0; i < tutors.length; i++){
-		console.log("Tutor id:" + tutors[i]._id);
-		console.log("Match id: " + currTutor._id);
-		console.log(tutors[i]._id === currTutor._id);
-		console.log(tutors[i].id === currTutor.id);
-		console.log(tutors[i].id == currTutor.id);
 		if(tutors[i].id === currTutor.id){
 			console.log("Tutor already exists");
 			return true;

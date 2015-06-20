@@ -329,7 +329,7 @@ io.on('connection', function (socket){
 
 				// update the db
 				var courseObj = findCourse(course);
-				courseObj.removeTutor(currentUser);
+				courseObj.save();
 
 				callback();
 

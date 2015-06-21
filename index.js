@@ -422,7 +422,7 @@ io.on('connection', function (socket){
 	socket.on('message', function(data){
 		console.log("Relaying Message..");
 		console.log(data);
-		io.to(data.recipID).emit('message', {messageData: data});
+		io.to(data.recipID).emit('message', data);
 		console.log("Relaying back to sender..");
 		socket.emit('message', data);
 	});

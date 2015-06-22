@@ -57,7 +57,7 @@ app.get("/", function(req, res){
 app.post("/login", function(req, res){
 	console.log("Login hit");
 	var pass = req.body.password;
-	var email = req.body.email;
+	var email = lowCase(req.body.email);
 
 	User.login(email, pass, function(err, user){
 		if(err){
@@ -76,9 +76,9 @@ var jwtSecret = "t3stk3y";
 app.post("/signup", function(req, res){
 	console.log("Sign up hit");
 	// take in credentials 
-	var first = req.body.first;
-	var last = req.body.last; 
-	var email = req.body.email;
+	var first = capCase(req.body.first);
+	var last = capCase(req.body.last); 
+	var email = lowCase(req.body.email);
 	var pass = req.body.password;
 
 	// try to create an account 
@@ -535,4 +535,14 @@ function getDistance(lat1, lon1, lat2, lon2, next){
 
 function deg2rad(deg){
   return deg * (Math.PI/180)
+}
+
+// capitalize the first letter in a string
+function capCase(txt){
+    return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+}
+
+//lowercase a whole string
+function lowCase(txt){
+	return txt.toLowerCase();
 }

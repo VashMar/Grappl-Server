@@ -71,7 +71,7 @@ userSchema.pre('save', function(next){
 
 
 userSchema.statics.create = function(first, last, email, password, next){
-	var user = new User({firstName:first, lastName:last, email:email, password:password});
+	var user = new User({firstName: first, lastName:last, email:email, password:password});
 	user.save(function(err, user){
 		console.log("Saving new user: " + first+ " " + last + " (" + email + ")");
 		if(err){
@@ -244,6 +244,10 @@ userSchema.methods.updateTutorCourses = function(courses, next){
 userSchema.methods.setApproved = function(){
 	
 }
+
+
+
+
 
 
 User = mongoose.model('User', userSchema);

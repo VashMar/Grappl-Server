@@ -307,6 +307,7 @@ io.on('connection', function (socket){
 				// add the tutor to the available list for all courses if they don't exist 
 				if(!tutorExists(broadcastingTutors[ALL_COURSES], currentUser)){
 					broadcastingTutors[ALL_COURSES].push(currentUser);	
+					console.log("Broadcasting Tutors: " + broadcastingTutors[ALL_COURSES]);
 				}
 
 				// add the tutor to the available list for appropriate courses 

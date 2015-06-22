@@ -162,46 +162,64 @@ var allCourses = [];
 
 broadcastingTutors[ALL_COURSES] = []; // makes sure we can track all the available tutors at once 
 
-// loads all the broadcasting tutors for each course 
-Course.getAll(function(courses){
-	allCourses = courses; 
+wipeBroadcasters();
 
-	//retrieve tutors for each course 
-	allCourses.forEach(function(course){
-		console.log("Loading tutors for " + course.name + "..");
 
-		// sets the tutor list per course 
-		var tutors = course.tutors;
-		broadcastingTutors[course.name] = tutors;
-		console.log(course.name + "'s tutors: " + JSON.stringify(tutors));
+function loadBroadcasters(){
+	// loads all the broadcasting tutors for each course 
+	Course.getAll(function(courses){
+		allCourses = courses; 
 
-		// goes through all tutors, if tutor doesnt exist in broadcasting list, add them
-		tutors.forEach(function(tutor){
-			if(!tutorExists(broadcastingTutors[ALL_COURSES], tutor)){
-				broadcastingTutors[ALL_COURSES].push(tutor);
-			}
+		//retrieve tutors for each course 
+		allCourses.forEach(function(course){
+			console.log("Loading tutors for " + course.name + "..");
+
+			// sets the tutor list per course 
+			var tutors = course.tutors;
+			broadcastingTutors[course.name] = tutors;
+			console.log(course.name + "'s tutors: " + JSON.stringify(tutors));
+
+			// goes through all tutors, if tutor doesnt exist in broadcasting list, add them
+			tutors.forEach(function(tutor){
+				if(!tutorExists(broadcastingTutors[ALL_COURSES], tutor)){
+					broadcastingTutors[ALL_COURSES].push(tutor);
+				}
+			});
 		});
+
+		// if(COURSE_LIST.length != allCourses.length){
+		// 	// populates the courses based on the course list 
+		// 	for(var i = 0; i < COURSE_LIST.length; i++){
+
+		// 		var courseName = COURSE_LIST[i];
+		// 		var course = new Course({name: courseName});
+
+		// 		console.log("Adding course: " + courseName );
+		// 		course.save(function(err){
+		// 			if(err){
+		// 				console.log(err);
+		// 			}
+		// 		});
+
+		// 		broadcastingTutors[courseName] = [];
+		// 	}
+
+		// }
+	});
+}
+
+
+function wipeBroadcasters(){
+	console.log("Wiping Broadcasters..");
+	var bcastCourses = Object.keys(broadcastingTutors);
+	allCourses.forEach(function(course){
+		course.tutors = [];
+		broadcastingTutors[course.name] = [];
+		course.save();
 	});
 
-	// if(COURSE_LIST.length != allCourses.length){
-	// 	// populates the courses based on the course list 
-	// 	for(var i = 0; i < COURSE_LIST.length; i++){
-
-	// 		var courseName = COURSE_LIST[i];
-	// 		var course = new Course({name: courseName});
-
-	// 		console.log("Adding course: " + courseName );
-	// 		course.save(function(err){
-	// 			if(err){
-	// 				console.log(err);
-	// 			}
-	// 		});
-
-	// 		broadcastingTutors[courseName] = [];
-	// 	}
-
-	// }
-});
+	broadcastingTutors[ALL_COURSES] = [];
+}
 
 
 

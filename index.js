@@ -277,9 +277,14 @@ io.on('connection', function (socket){
 		}else{
 			socket.emit('grapplFail');
 		}
-		
-
 	}); 
+
+	// relay the grapplSuccess to the connected user
+	socket.on('grapplSuccess', function(data){
+		console.log("Grappl Succeded..");
+		connectedUser = data.id;
+		io.to(connectedUser).emit('grapplSuccess');
+	});
 
 	// sets a tutor as available to tutor a class 
 	socket.on('setAvailable', function(data){

@@ -245,21 +245,17 @@ io.on('connection', function (socket){
 	});
  
 
-	// if a tutor gets grappled remove them from the available tutors cache
+	// initiate a grappl to tutor  by sending an emit along with data 
 	socket.on('grapple', function(data){
 		console.log("Grapple data: " + JSON.stringify(data)); 
 		connectedUser = data.id;  // get the tutors socketID and use it to join the same room as / broadcast to the tutor socket 
 		console.log("emitting response to room: " + connectedUser);
 
 
-		// return the user object who initated the grapple 
+		// emit to tutor 
 		io.to(connectedUser).emit('grapple', {id: currentUser.clientAccountData()});
 
-		// remove the tutor from availability 
-		broadcastRemove();
-
 	}); 
-
 
 	// sets a tutor as available to tutor a class 
 	socket.on('setAvailable', function(data){
@@ -435,49 +431,6 @@ io.on('connection', function (socket){
 	});
 
 
-
-
-	/** Socket Helpers **/ 
-
-
-	function broadcastRemove(){
-
-		// remove tutor from pool of all 
-		var tutors = broadcastingTutors[ALL_COURSES];
-		removeTutor(tutors);
-
-		async.each(tutorCourses, function(course, callback){
-
-			// remove tutor from every course they are in 
-			tutors = broadcastingTutors[course];
-			removeTutor(tutors);
-
-			// update the db
-			var courseObj = findCourse(course);
-			courseObj.save();
-
-			callback();
-
-		}, function(){ // callback after done going through tutors list 
-			tutorCourses = []; //empty the list of tutorCourses 
-			console.log("Remove Available Complete");
-			socket.emit('removeAvailableDone', {responseType: "removeAvailableDone"});
-		});
-
-		function removeTutor(tutors){
-			for(var i =0; i < tutors.length; i++){
-				console.log("tutorID:" + tutors[i].id);
-				console.log("userID:" + currentUser.id);
-				if(tutors[i].id == currentUser.id){
-					tutors[i].setUnavailable();
-					console.log("Removing tutor: " + JSON.stringify(tutors));
-					tutors.splice(i,1);  // removes tutor from list 
-					console.log("Tutor Removed: " + JSON.stringify(tutors));
-				}
-			}
-
-		}
-	}
 
 
 });  // socket code ends 

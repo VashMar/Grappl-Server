@@ -281,7 +281,7 @@ io.on('connection', function (socket){
 
 	// relay the grapplSuccess to the connected user
 	socket.on('grapplSuccess', function(data){
-		console.log("Grappl Succeded..");
+		console.log("Grappl Succeeded..");
 		connectedUser = data.id;
 		io.to(connectedUser).emit('grapplSuccess');
 	});
@@ -312,7 +312,6 @@ io.on('connection', function (socket){
 				// add the tutor to the available list for all courses if they don't exist 
 				if(!tutorExists(broadcastingTutors[ALL_COURSES], currentUser)){
 					broadcastingTutors[ALL_COURSES].push(currentUser);	
-					console.log("Broadcasting Tutors: " + broadcastingTutors[ALL_COURSES]);
 				}
 
 				// add the tutor to the available list for appropriate courses 
@@ -345,6 +344,8 @@ io.on('connection', function (socket){
 
 	// removes a tutor from the availability pool for all their courses
 	socket.on('removeAvailable', function(data){
+		console.log(broadcastingTutors[ALL_COURSES].length + " in pool");
+		console.log("Removing a tutor...")
 
 		// remove tutor from pool of all 
 		removeTutor(broadcastingTutors[ALL_COURSES]);
@@ -363,14 +364,12 @@ io.on('connection', function (socket){
 		}, function(){ // callback after done going through tutors list 
 			tutorCourses = []; //empty the list of tutorCourses 
 			console.log("Remove Available Complete");
-			console.log("Broadcasting tutors: " + broadcastingTutors[ALL_COURSES]);
+			console.log(broadcastingTutors[ALL_COURSES].length + " in pool");
 			socket.emit('removeAvailableDone', {responseType: "removeAvailableDone"});
 		});
 
 		function removeTutor(tutors){
 			for(var i =0; i < tutors.length; i++){
-				console.log("tutorID:" + tutors[i].id);
-				console.log("userID:" + currentUser.id);
 				if(tutors[i].id == currentUser.id){
 					tutors[i].setUnavailable();
 					tutors.splice(i,1);  // removes tutor from list 

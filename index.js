@@ -448,7 +448,7 @@ io.on('connection', function (socket){
 
 	// if disconnect handle appropriate case if in a session or in grapple 
 	socket.on('disconnect', function(){
-		console.log("Socket Disconnected");
+		console.log(currentUser.firstName + " Disconnected");
 		io.to(connectedUser).emit('connectionLost');
 	});
 

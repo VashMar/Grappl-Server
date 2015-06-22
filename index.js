@@ -162,7 +162,7 @@ var allCourses = [];
 
 broadcastingTutors[ALL_COURSES] = []; // makes sure we can track all the available tutors at once 
 
-wipeBroadcasters();
+loadBroadcasters();
 
 
 function loadBroadcasters(){

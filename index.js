@@ -251,7 +251,7 @@ io.on('connection', function (socket){
 		connectedUser = data.id;  // get the tutors socketID and use it to join the same room as / broadcast to the tutor socket 
 		console.log("emitting response to room: " + connectedUser);
 
-
+		console.log("Broadcasting tutors: " + broadcastingTutors[ALL_COURSES]);
 
 		if(tutorExists(broadcastingTutors[ALL_COURSES], connectedUser)){
 			// emit to tutor 
@@ -341,6 +341,7 @@ io.on('connection', function (socket){
 		}, function(){ // callback after done going through tutors list 
 			tutorCourses = []; //empty the list of tutorCourses 
 			console.log("Remove Available Complete");
+			console.log("Broadcasting tutors: " + broadcastingTutors[ALL_COURSES]);
 			socket.emit('removeAvailableDone', {responseType: "removeAvailableDone"});
 		});
 
@@ -350,9 +351,7 @@ io.on('connection', function (socket){
 				console.log("userID:" + currentUser.id);
 				if(tutors[i].id == currentUser.id){
 					tutors[i].setUnavailable();
-					console.log("Removing tutor: " + JSON.stringify(tutors));
 					tutors.splice(i,1);  // removes tutor from list 
-					console.log("Tutor Removed: " + JSON.stringify(tutors));
 				}
 			}
 

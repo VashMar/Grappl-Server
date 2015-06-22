@@ -342,14 +342,12 @@ io.on('connection', function (socket){
 	socket.on('removeAvailable', function(data){
 
 		// remove tutor from pool of all 
-		var tutors = broadcastingTutors[ALL_COURSES];
-		removeTutor(tutors);
+		removeTutor(broadcastingTutors[ALL_COURSES]);
 
 		async.each(tutorCourses, function(course, callback){
 
 			// remove tutor from every course they are in 
-			tutors = broadcastingTutors[course];
-			removeTutor(tutors);
+			removeTutor( broadcastingTutors[course]);
 
 			// update the db
 			var courseObj = findCourse(course);

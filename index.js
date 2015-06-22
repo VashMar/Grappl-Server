@@ -252,8 +252,14 @@ io.on('connection', function (socket){
 		console.log("emitting response to room: " + connectedUser);
 
 
-		// emit to tutor 
-		io.to(connectedUser).emit('grapple', {id: currentUser.clientAccountData()});
+
+		if(tutorExists(broadcastingTutors[ALL_COURSES], connectedUser)){
+			// emit to tutor 
+			io.to(connectedUser).emit('grapple', {id: currentUser.clientAccountData()});
+		}else{
+			socket.emit('grapplFail');
+		}
+		
 
 	}); 
 
@@ -442,7 +448,7 @@ io.on('connection', function (socket){
 function tutorExists(tutors, currTutor){
 	for( var i = 0; i < tutors.length; i++){
 		if(tutors[i].id === currTutor.id){
-			console.log("Tutor already exists");
+			console.log("Tutor exists");
 			return true;
 		}
 		if(i == tutors.length-1){
@@ -450,6 +456,20 @@ function tutorExists(tutors, currTutor){
 		}
 	}
 }
+
+// returns true if tutor exists in list of tutors based on ID
+function tutorExists(tutors, tutorID){
+	for( var i = 0; i < tutors.length; i++){
+		if(tutors[i].id === currTutor.id){
+			console.log("Tutor exists");
+			return true;
+		}
+		if(i == tutors.length-1){
+			return false; 
+		}
+	}
+}
+
 
 
 function timeSortTutors(tutors){

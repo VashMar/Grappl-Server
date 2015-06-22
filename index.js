@@ -269,12 +269,11 @@ io.on('connection', function (socket){
 		connectedUser = data.id;  // get the tutors socketID and use it to join the same room as / broadcast to the tutor socket 
 		console.log("emitting response to room: " + connectedUser);
 
-		console.log("Broadcasting tutors: " + broadcastingTutors[ALL_COURSES]);
-
 		if(tutorExists(broadcastingTutors[ALL_COURSES], connectedUser)){
 			// emit to tutor 
 			io.to(connectedUser).emit('grapple', {id: currentUser.clientAccountData()});
 		}else{
+			console.log("Grappl failed");
 			socket.emit('grapplFail');
 		}
 	}); 

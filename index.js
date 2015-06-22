@@ -162,7 +162,7 @@ var allCourses = [];
 
 broadcastingTutors[ALL_COURSES] = []; // makes sure we can track all the available tutors at once 
 
-loadBroadcasters();
+wipeBroadcasters();
 
 
 function loadBroadcasters(){
@@ -212,13 +212,13 @@ function loadBroadcasters(){
 function wipeBroadcasters(){
 	console.log("Wiping Broadcasters..");
 	var bcastCourses = Object.keys(broadcastingTutors);
-	allCourses.forEach(function(course){
-		course.tutors = [];
-		broadcastingTutors[course.name] = [];
-		course.save();
+	Course.getAll(function(courses){
+		courses.forEach(function(course){
+			course.tutors = [];
+			broadcastingTutors[course.name] = [];
+			course.save();
+		});
 	});
-
-	broadcastingTutors[ALL_COURSES] = [];
 }
 
 

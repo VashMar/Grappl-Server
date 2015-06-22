@@ -271,7 +271,7 @@ io.on('connection', function (socket){
 
 		if(tutorExists(broadcastingTutors[ALL_COURSES], connectedUser)){
 			// emit to tutor 
-			io.to(connectedUser).emit('grapple', {id: currentUser.clientAccountData()});
+			io.to(connectedUser).emit('grapple', {user: currentUser.clientAccountData()});
 		}else{
 			console.log("Grappl failed");
 			socket.emit('grapplFail');
@@ -302,6 +302,8 @@ io.on('connection', function (socket){
 		function updateSession(){
 			// save the tutor broadcast settings 
 			currentUser.updateTutorSession(data.startTime, data.period, meetingSpots, data.price, data.lat, data.lon, function(tutor){
+
+				socket.emit('sessionUpdated', {session: tutor.getSessionData()});
 
 				currentUser = tutor; // update our version of currUser so it's same as DB 
 				tutorCourses = data.courses; // updates tutors current course list   

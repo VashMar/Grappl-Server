@@ -206,6 +206,10 @@ userSchema.methods.updateTutorSession = function(startTime, period, meetingSpots
 	next(this);
 }
 
+userSchema.methods.getSessionData = function(){
+	return this.tutorSession; 
+}
+
 
 userSchema.methods.updateStudentRating = function(rating, next){
 	this.studentRating = rating;

@@ -460,7 +460,7 @@ function tutorExists(tutors, currTutor){
 // returns true if tutor exists in list of tutors based on ID
 function tutorExists(tutors, tutorID){
 	for( var i = 0; i < tutors.length; i++){
-		if(tutors[i].id === currTutor.id){
+		if(tutors[i].id === tutorID){
 			console.log("Tutor exists");
 			return true;
 		}

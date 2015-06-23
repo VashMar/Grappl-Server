@@ -162,7 +162,7 @@ var allCourses = [];
 
 broadcastingTutors[ALL_COURSES] = []; // makes sure we can track all the available tutors at once 
 
-loadBroadcasters();
+wipeBroadcasters();
 
 
 function loadBroadcasters(){
@@ -459,8 +459,45 @@ io.on('connection', function (socket){
 	// if disconnect handle appropriate case if in a session or in grapple 
 	socket.on('disconnect', function(){
 		console.log(currentUser.firstName + " Disconnected");
+		stopBroadcasting();
 		io.to(connectedUser).emit('connectionLost');
 	});
+
+
+
+
+	function stopBroadcasting(){
+		// remove tutor from pool of all 
+		removeTutor(broadcastingTutors[ALL_COURSES]);
+
+		async.each(tutorCourses, function(course, callback){
+
+			// remove tutor from every course they are in 
+			removeTutor( broadcastingTutors[course]);
+
+			// update the db
+			var courseObj = findCourse(course);
+			courseObj.save();
+
+			callback();
+
+		}, function(){ // callback after done going through tutors list 
+			tutorCourses = []; //empty the list of tutorCourses 
+			console.log("Remove Available Complete");
+			console.log(broadcastingTutors[ALL_COURSES].length + " in pool");
+			socket.emit('removeAvailableDone', {responseType: "removeAvailableDone"});
+		});
+
+		function removeTutor(tutors){
+			for(var i =0; i < tutors.length; i++){
+				if(tutors[i].id == currentUser.id){
+					tutors[i].setUnavailable();
+					tutors.splice(i,1);  // removes tutor from list 
+				}
+			}
+
+		}
+	}
 
 
 

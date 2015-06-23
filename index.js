@@ -162,7 +162,7 @@ var allCourses = [];
 
 broadcastingTutors[ALL_COURSES] = []; // makes sure we can track all the available tutors at once 
 
-wipeBroadcasters();
+loadBroadcasters();
 
 
 function loadBroadcasters(){
@@ -477,7 +477,8 @@ io.on('connection', function (socket){
 
 			// update the db
 			var courseObj = findCourse(course);
-			courseObj.save();
+			if(courseObj){courseObj.save();}
+			
 
 			callback();
 

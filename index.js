@@ -240,7 +240,7 @@ io.on('connection', function (socket){
 	var currentUser;				// tracks the user on this socket 
 	var socketID = socket.id;		// id of this socket 
 	var tutorCourses = [];		// if it's user is a tutor keep track of courses 
-	var connectedUser;			// whomever this user may be 
+	var connectedUser;			// other user in connection 
 	var inSession = false;  		// tracks whether the user on this socket is in a session
 	var clientSessionTime;			// captures time left in session (ms)
 	var serverSessionTime;		// tracks session from server side 
@@ -271,7 +271,7 @@ io.on('connection', function (socket){
 
 		if(tutorExists(broadcastingTutors[ALL_COURSES], connectedUser)){
 			// emit to tutor 
-			io.to(connectedUser).emit('grapple', {user: currentUser.clientAccountData()});
+			io.to(connectedUser).emit('grapple', {user: currentUser.clientAccountData(), place: data.place});
 		}else{
 			console.log("Grappl failed");
 			socket.emit('grapplFail');
@@ -379,6 +379,11 @@ io.on('connection', function (socket){
 
 		}
 
+	});
+
+	// relay meetup acceptance to connected user 
+	socket.on('startMeetup', function(data){
+		io.to(connectedUser).emit('startMeetup');
 	});
 
 

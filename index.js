@@ -285,6 +285,12 @@ io.on('connection', function (socket){
 		io.to(connectedUser).emit('grapplSuccess');
 	});
 
+	// notify the connected user and remove the connection
+	socket.on('cancelGrappl', function(data){
+		io.to(connectedUser).emit('grapplEnded');
+		connectedUser = null; 
+	});
+
 	// sets a tutor as available to tutor a class 
 	socket.on('setAvailable', function(data){
 		var meetingSpots = [];
@@ -421,7 +427,6 @@ io.on('connection', function (socket){
 	socket.on('sessionComplete', function(){
 		inSession = false; 
 		connectedUser = null; 
-
 	});
 
 

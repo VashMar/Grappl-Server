@@ -304,13 +304,14 @@ io.on('connection', function (socket){
 			}
 		}
 		
-
+		// stores latest session data and acknowledges 
 		function updateSession(){
 			// save the tutor broadcast settings 
 			currentUser.updateTutorSession(data.startTime, data.period, meetingSpots, data.price, data.lat, data.lon, function(tutor){
-				
+
 				var sessionData = tutor.getSessionData();
 				sessionData["courses"] = data.courses; 
+				console.log("session data: " + JSON.stringify(sessionData));
 				socket.emit('sessionUpdated', {session: sessionData});
 
 				currentUser = tutor; // update our version of currUser so it's same as DB 

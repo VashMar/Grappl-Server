@@ -309,10 +309,8 @@ io.on('connection', function (socket){
 			// save the tutor broadcast settings 
 			currentUser.updateTutorSession(data.startTime, data.period, meetingSpots, data.price, data.lat, data.lon, function(tutor){
 
-				var sessionData = tutor.getSessionData();
-				sessionData["courses"] = data.courses; 
-				console.log("session data: " + JSON.stringify(sessionData));
-				socket.emit('sessionUpdated', {session: sessionData});
+
+				socket.emit('sessionUpdated', {session: currentUser.getSessionData()});
 
 				currentUser = tutor; // update our version of currUser so it's same as DB 
 				tutorCourses = data.courses; // updates tutors current course list   
@@ -415,7 +413,6 @@ io.on('connection', function (socket){
 		setInterval(function(){
 			serverSessionTime = serverSessionTime - 10000;	
 		}, 10000);
-
 	
 	});
 
@@ -424,6 +421,10 @@ io.on('connection', function (socket){
 		console.log("Server Time: "  + serverSessionTime);
 		console.log("Client Time: " + serverSessionTime);
 		clientSessionTime = data.sessionTime; 
+	});
+
+	socket.on('endSession', function(data){
+		io.to(connectedUser).emit('sessionEnded', {time: data.time});
 	});
 
 	// when a session is completed clear the stored data

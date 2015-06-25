@@ -19,8 +19,8 @@ var userSchema = new Schema({
 	lastName: {type:String}, 
 	email: {type: String, unique: true, required: true, validate: isEmail},
 	password: {type: String},
-	studentRating: {type: Number},
-	tutorRating: {type: Number},
+	studentRating: {type: Number, default: 0},
+	tutorRating: {type: Number, default: 0},
 	location:{
 		lat: {type:Number}, 
 		lon:{type:Number}
@@ -31,6 +31,7 @@ var userSchema = new Schema({
 	studentCourses: [{type: ObjectId, ref: 'Course'}],
 	tutorCourses: [String],
 	messages: {type: ObjectId, ref: 'Message'},
+	sessionCount: {type: Number, default: 0},
 	tutorSession:{			// the information the tutor will set per broadcasted session
 		available: {type: Boolean, default: false},
 		broadcasting: {type: Boolean, default:false},
@@ -146,8 +147,8 @@ userSchema.methods.clientAccountData = function(){
 	accountData.lastName = this.lastName;
 	accountData.email = this.email;
 	accountData.profilePic = this.profilePic;
-	accountData.rating = this.studentRating; 
-
+	accountData.studentRating = this.studentRating; 
+	accountData.tutorRating = this.tutorRating;
 	return accountData;
 
 }
@@ -170,12 +171,24 @@ userSchema.methods.clientTutorData = function(distance, next){
 	tutorData.firstName = this.firstName;
 	tutorData.lastName = this.lastName;
 	tutorData.session = this.tutorSession;
-	tutorData.rating = this.rating;
+	tutorData.tutorRating = this.tutorRating;
+	tutorData.studentRating = this.studentRating;
 	tutorData.location = this.location;
 	tutorData.profilePic = this.profilePic;
 	tutorData.distance = distance.toFixed(2); // distance from client 
 
 	next(tutorData);
+}
+
+userSchema.methods.incrementSessionCount = function(){
+	this.tutorSession.sessionCount++;
+	this.save(function(err){
+		if(err){
+			console.log(err);
+		}else{
+			console.log("Session count incremented");
+		}
+	});
 }
 
 

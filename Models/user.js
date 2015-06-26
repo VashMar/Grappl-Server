@@ -229,7 +229,7 @@ userSchema.methods.updateStudentRating = function(rating){
  
 // averages newly sent rating with old rating to get updated rating 
 userSchema.methods.updateTutorRating = function(rating){
-	this.tutorSessionCount = this.tutorSessionCount++;
+	this.tutorSessionCount += 1;
 	console.log("Tutor sessions incremented to: " + this.tutorSessionCount);
 	console.log("Current rating: " + this.tutorRating);
 	console.log("Latest rating: " + rating);

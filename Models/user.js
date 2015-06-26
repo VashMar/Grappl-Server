@@ -30,8 +30,9 @@ var userSchema = new Schema({
 	approved: {type:Boolean, default: false},
 	studentCourses: [{type: ObjectId, ref: 'Course'}],
 	tutorCourses: [String],
+	studentSessionCount: {type: Number, default:0},
+	tutorSessionCount: {type: Number, default: 0},
 	messages: {type: ObjectId, ref: 'Message'},
-	sessionCount: {type: Number, default: 0},
 	tutorSession:{			// the information the tutor will set per broadcasted session
 		available: {type: Boolean, default: false},
 		broadcasting: {type: Boolean, default:false},
@@ -149,6 +150,8 @@ userSchema.methods.clientAccountData = function(){
 	accountData.profilePic = this.profilePic;
 	accountData.studentRating = this.studentRating; 
 	accountData.tutorRating = this.tutorRating;
+	accountData.tutorSessionCount = this.tutorSessionCount;
+	accountData.studentSessionCount = this.studentSessionCount;
 	return accountData;
 
 }
@@ -172,7 +175,7 @@ userSchema.methods.clientTutorData = function(distance, next){
 	tutorData.lastName = this.lastName;
 	tutorData.session = this.tutorSession;
 	tutorData.tutorRating = this.tutorRating;
-	tutorData.studentRating = this.studentRating;
+	tutorData.tutorSessionCount = this.tutorSessionCount;
 	tutorData.location = this.location;
 	tutorData.profilePic = this.profilePic;
 	tutorData.distance = distance.toFixed(2); // distance from client 
@@ -180,16 +183,6 @@ userSchema.methods.clientTutorData = function(distance, next){
 	next(tutorData);
 }
 
-userSchema.methods.incrementSessionCount = function(){
-	this.tutorSession.sessionCount++;
-	this.save(function(err){
-		if(err){
-			console.log(err);
-		}else{
-			console.log("Session count incremented");
-		}
-	});
-}
 
 
 // removes a tutor from being seen as available 
@@ -225,7 +218,8 @@ userSchema.methods.getSessionData = function(){
 
 
 userSchema.methods.updateStudentRating = function(rating, next){
-	this.studentRating = rating;
+	this.studentSessionCount++;
+	this.studentRating = (this.studentRating  + rating)/this.studentSessionCount;
 	this.save(function(err, user){
 		if(err){console.log(err);}
 	});
@@ -235,7 +229,8 @@ userSchema.methods.updateStudentRating = function(rating, next){
  
 // averages newly sent rating with old rating to get updated rating 
 userSchema.methods.updateTutorRating = function(rating, next){
-	this.tutorRating =  (this.tutoRating + rating)/2 ; 
+	this.tutorSessionCount++;
+	this.tutorRating =  (this.tutoRating + rating)/this.tutorSessionCount; 
 	this.save(function(err, user){
 		console.log("Updating tutor rating..");
 		if(err){console.log(err);}

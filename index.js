@@ -425,7 +425,8 @@ io.on('connection', function (socket){
 
 	socket.on('endSession', function(data){
 		io.to(connectedUser).emit('sessionEnded', {time: data.time});
-	});
+	})
+	;
 
 	// when a session is completed clear the stored data
 	socket.on('sessionComplete', function(){
@@ -443,13 +444,17 @@ io.on('connection', function (socket){
 	// updates the rating of other user 
 	socket.on('updateRating', function(data){
 			console.log("Updating tutor rating..");
-	  	User.find({_id:data.id}, function(err, user){
+	  	User.find({_id:connectedUser}, function(err, user){
 	  	 	if(err){
 	  	 		console.log(err);
 	  	 	}
 	  	 	if(user){
 	  	 		console.log("Updating tutor rating");
-	  	 		user.updateTutorRating(data.rating);
+	  	 		if(isTutor){
+	  	 			user.updateTutorRating(data.rating);	
+	  	 		}else{
+	  	 			user.updateStudentRating(data.rating);
+	  	 		}
 	  	 	}
 	  	});
 	});

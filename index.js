@@ -449,8 +449,8 @@ io.on('connection', function (socket){
 	  	 		console.log(err);
 	  	 	}
 	  	 	if(user){
-	  	 		console.log("Updating tutor rating");
-	  	 		if(isTutor){
+	  	 		console.log("Is user tutor? " + data.isTutor);
+	  	 		if(data.isTutor){
 	  	 			user.updateTutorRating(data.rating);	
 	  	 		}else{
 	  	 			user.updateStudentRating(data.rating);

@@ -234,6 +234,7 @@ userSchema.methods.updateTutorRating = function(rating){
 	console.log("Current rating: " + this.tutorRating);
 	console.log("Latest rating: " + rating);
 	this.tutorRating =  (this.tutorRating + rating)/this.tutorSessionCount; 
+	console.log("Updated Rating: " + this.tutorRating);
 	this.save(function(err, user){
 		console.log("Updating tutor rating..");
 		if(err){console.log(err);}

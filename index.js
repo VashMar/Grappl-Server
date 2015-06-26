@@ -444,7 +444,7 @@ io.on('connection', function (socket){
 	// updates the rating of other user 
 	socket.on('updateRating', function(data){
 			console.log("Updating tutor rating..");
-	  	User.find({_id:connectedUser}, function(err, user){
+	  	User.findOne({_id:connectedUser}, function(err, user){
 	  	 	if(err){
 	  	 		console.log(err);
 	  	 	}

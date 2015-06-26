@@ -231,7 +231,7 @@ userSchema.methods.updateStudentRating = function(rating){
 userSchema.methods.updateTutorRating = function(rating){
 	this.tutorSessionCount = this.tutorSessionCount++;
 	console.log("Tutor sessions incremented to: " + this.tutorSessionCount);
-	console.log("Current rating: " + tutorRating);
+	console.log("Current rating: " + this.tutorRating);
 	console.log("Latest rating: " + rating);
 	this.tutorRating =  (this.tutorRating + rating)/this.tutorSessionCount; 
 	this.save(function(err, user){

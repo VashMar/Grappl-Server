@@ -72,6 +72,19 @@ userSchema.pre('save', function(next){
 });
 
 
+
+userSchema.statics.reload = function(userID, next){
+	this.findOne({_id: userID}, function(err, user){
+		if(user){
+			console.log("current user reloaded");
+			next(user);
+		}else{
+			next(false);
+		}
+	});
+}
+
+
 userSchema.statics.create = function(first, last, email, password, next){
 	var user = new User({firstName: first, lastName:last, email:email, password:password});
 	user.save(function(err, user){
@@ -162,9 +175,7 @@ userSchema.methods.clientTutorData = function(distance, next){
 	var tutorData = {};
 
 	// check availability on the fly because it's always changing 
-	console.log("Start time: " +  this.tutorSession.startTime);
-	console.log("Get time: " + new Date().getTime());
-	console.log("Available?:" + new Date().getTime() > this.tutorSession.startTime);
+	console.log("Tutor Rating")
 	if(new Date().getTime() > this.tutorSession.startTime){
 		this.tutorSession.available = true; 
 		this.save();
@@ -179,7 +190,6 @@ userSchema.methods.clientTutorData = function(distance, next){
 	tutorData.location = this.location;
 	tutorData.profilePic = this.profilePic;
 	tutorData.distance = distance.toFixed(2); // distance from client 
-
 	next(tutorData);
 }
 
@@ -218,7 +228,8 @@ userSchema.methods.getSessionData = function(){
 
 
 userSchema.methods.updateStudentRating = function(rating){
-	this.studentSessionCount++;
+	
+	this.tutorSessionCount += 1;
 	this.studentRating = (this.studentRating  + rating)/this.studentSessionCount;
 	this.save(function(err, user){
 		if(err){console.log(err);}
@@ -243,6 +254,10 @@ userSchema.methods.updateTutorRating = function(rating){
 	this.save(function(err, user){
 		console.log("Updating tutor rating..");
 		if(err){console.log(err);}
+
+		if(user){
+			console.log(user.tutorRating);
+		}
 	});
 }
 

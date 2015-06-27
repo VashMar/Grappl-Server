@@ -294,15 +294,37 @@ io.on('connection', function (socket){
 	// sets a tutor as available to tutor a class 
 	socket.on('setAvailable', function(data){
 		var meetingSpots = [];
+		var asyncTasks = [];
 
-		// convert the meeting spots to JSON
-		for(var i =0; i < data.meetingSpots.length; i++){
-			meetingSpots.push(JSON.parse(data.meetingSpots[i]));
+		// do the current user reload and meeting spot parsing in parallel 
+		asyncTasks.push(function(callback){
+			User.reload(currentUser.id, function(user){
+				if(user){
+					currentUser = user;
+					callback();
+				}
+			});
+		});
 
-			if(i == data.meetingSpots.length - 1){
-				updateSession();
+
+		asyncTasks.push(function(callback){
+			// convert the meeting spots to JSON
+			for(var i =0; i < data.meetingSpots.length; i++){
+				meetingSpots.push(JSON.parse(data.meetingSpots[i]));
+
+				if(i == data.meetingSpots.length - 1){
+					callback();
+				}
 			}
-		}
+
+		});
+		
+
+		async.parallel(asyncTasks, function(){
+		  	// All tasks are done now	
+			updateSession();		  	
+		});
+
 		
 		// stores latest session data and acknowledges 
 		function updateSession(){
@@ -451,10 +473,9 @@ io.on('connection', function (socket){
 	  	 	if(user){
 	  	 		console.log("Is user tutor? " + data.isTutor);
 	  	 		if(data.isTutor){
-	  	 			user.updateTutorRating(data.rating);	
+	  	 			user.updateTutorRating(data.rating);
 	  	 		}else{
 	  	 			user.updateStudentRating(data.rating);
-	  	 		}
 	  	 	}
 	  	});
 	});

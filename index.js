@@ -476,6 +476,7 @@ io.on('connection', function (socket){
 	  	 			user.updateTutorRating(data.rating);
 	  	 		}else{
 	  	 			user.updateStudentRating(data.rating);
+	  	 		}
 	  	 	}
 	  	});
 	});

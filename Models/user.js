@@ -177,6 +177,10 @@ userSchema.methods.clientTutorData = function(distance, next){
 	// check availability on the fly because it's always changing 
 	console.log("Tutor Rating")
 	if(new Date().getTime() > this.tutorSession.startTime){
+		if(this.tutorSession.startTime == 0){
+			// if the session starts now get current time
+			this.tutorSession.startTime = new Date().getTime();
+		}
 		this.tutorSession.available = true; 
 		this.save();
 	}

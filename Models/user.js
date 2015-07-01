@@ -232,9 +232,13 @@ userSchema.methods.getSessionData = function(){
 
 
 userSchema.methods.updateStudentRating = function(rating){
+
+	if(!isFinite(this.studentSessionCount)){
+		this.studentSessionCount = 0; 
+	}
 	
-	this.tutorSessionCount += 1;
-	this.studentRating = (this.studentRating  + rating)/this.studentSessionCount;
+	this.studentSessionCount += 1;
+	this.studentRating = (this.studentRating * (this.studentSessionCount - 1) + rating)/this.studentSessionCount; 
 	this.save(function(err, user){
 		if(err){console.log(err);}
 	});
@@ -253,7 +257,7 @@ userSchema.methods.updateTutorRating = function(rating){
 	console.log("Tutor sessions incremented to: " + this.tutorSessionCount);
 	console.log("Current rating: " + this.tutorRating);
 	console.log("Latest rating: " + rating);
-	this.tutorRating =  (this.tutorRating + rating)/this.tutorSessionCount; 
+	this.tutorRating =  (this.tutorRating * (this.tutorSessionCount - 1) + rating)/this.tutorSessionCount; 
 	console.log("Updated Rating: " + this.tutorRating);
 	this.save(function(err, user){
 		console.log("Updating tutor rating..");

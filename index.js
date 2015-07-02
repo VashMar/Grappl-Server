@@ -86,6 +86,7 @@ app.post("/signup", function(req, res){
 		if(err){
 			errHandle.signupErrors(res, err);
 		}else if(user){
+			console.log("User id: " + user._id);
 			// we are sending the profile in the token
 			var token = jwt.sign(user._id, jwtSecret);
 		  	res.json({token: token, user: user.clientAccountData()});

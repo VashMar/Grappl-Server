@@ -252,7 +252,6 @@ userSchema.methods.updateTutorRating = function(rating){
 		this.tutorSessionCount = 0; 
 	}
 
-
 	this.tutorSessionCount += 1;
 	console.log("Tutor sessions incremented to: " + this.tutorSessionCount);
 	console.log("Current rating: " + this.tutorRating);
@@ -267,6 +266,22 @@ userSchema.methods.updateTutorRating = function(rating){
 			console.log(user.tutorRating);
 		}
 	});
+}
+
+
+userSchema.methods.updateProfilePic = function(ref, next){
+	console.log("Updating Profile Pic..");
+	var url = "https://s3-us-west-2.amazonaws.com/grappl/" + ref; 
+	this.profilePic = url;
+	console.log("New Profile Pic: " + this.profilePic);
+
+	this.save(function(err, user){
+		if(err){console.log(err);}
+		if(user){
+			next(user);
+		}
+	})
+
 }
 
 userSchema.methods.updateLocation = function(lat, lon, next){

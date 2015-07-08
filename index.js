@@ -410,6 +410,19 @@ io.on('connection', function (socket){
 		}
 
 	});
+	
+	// when account pic gets changed 
+	socket.on('updateProfilePic', function(data){
+		currentUser.updateProfilePic(data.ref, function(user){
+			if(user){
+				// get the latest version of current user
+				currentUser = user; 
+				// update the client side model 
+				console.log("Profile Pic Updated");
+				socket.emit('updatedPic', {profilePic: currentUser.profilePic});
+			}
+		});
+	});
 
 	// relay meetup acceptance to connected user 
 	socket.on('startMeetup', function(data){

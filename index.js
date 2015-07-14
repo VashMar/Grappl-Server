@@ -486,6 +486,7 @@ io.on('connection', function (socket){
 	  	 	}
 	  	 	if(user){
 	  	 		console.log("Is user tutor? " + data.isTutor);
+	  	 		console.log("Session rating: " + data.rating);
 	  	 		if(data.isTutor){
 	  	 			user.updateTutorRating(data.rating);
 	  	 		}else{

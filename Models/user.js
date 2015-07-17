@@ -271,7 +271,7 @@ userSchema.methods.updateTutorRating = function(rating){
 
 userSchema.methods.updateProfilePic = function(ref, next){
 	console.log("Updating Profile Pic..");
-	var url = "https://s3-us-west-2.amazonaws.com/grappl/" + ref; 
+	var url = "https://s3.amazonaws.com/grappl-pics/" + ref; 
 	this.profilePic = url;
 	console.log("New Profile Pic: " + this.profilePic);
 

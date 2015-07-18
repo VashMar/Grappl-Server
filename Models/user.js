@@ -2,7 +2,7 @@ var mongoose = require('mongoose'),
     validate = require('mongoose-validator'),
 	bcrypt 	 = require('bcrypt'),
 	SALT_WORK_FACTOR = 9;
-  
+
 
 var Schema = mongoose.Schema,
 	ObjectId = Schema.Types.ObjectId;

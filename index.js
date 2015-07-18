@@ -1,3 +1,6 @@
+
+/******************************************************************** Initialization *********************************************************************************/
+
 var express = require("express");
 var mongoose = require("mongoose");
 var http = require('http');
@@ -14,11 +17,14 @@ var app = express();
 var bodyParser = require('body-parser');
 var multer = require('multer'); 
 var async = require('async');
+var xlsx = require('node-xlsx'); // parses excel files 
+
 
 
 //models
 var User = require("./Models/user");
 var Course = require("./Models/course");
+var Location = require("./Models/location");
 
 //controllers
 var Account = require("./Controllers/account");
@@ -49,7 +55,7 @@ var COURSE_LIST = ["Chemistry 103", "Comp Sci 302", "French 4", "Math 234", "Phy
 
 var ALL_COURSES = "All";  // signifies index for all the courses 
 
-////////////////////////////////////////////// Router ////////////////////////////////////////////////////////////
+/******************************************************************** Router *********************************************************************************/
 app.get("/", function(req, res){
 	res.json(200);
 });
@@ -147,23 +153,53 @@ app.get('/courses', function(req, res){
 
 
 app.get('/locations', function(req, res){
-	
+	res.json(meetingLocations);
 });
 
 
 
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/******************************************************************** On Start Up *********************************************************************************/
 
 // create a map to store available tutors in each course (eventually implement redis cache)
 var broadcastingTutors = {};
 // a map to store tutors that have been grappled by course 
 var grappledTutors = {}; 
 var allCourses = [];
-
+var meetingLocations = [];
 
 broadcastingTutors[ALL_COURSES] = []; // makes sure we can track all the available tutors at once 
 
+
+readLocs();
 loadBroadcasters();
+
+
+function readLocs(){
+	var xlData = xlsx.parse('Locations.xlsx');
+	var locList = xlData[0].data;
+
+	for(var i = 0; i < locList.length; i++){
+		var loc = locList[i];
+		var locObj = new Location({
+			name: loc[0],
+			address: loc[1],
+			lat: loc[2],
+			lon: loc[3]
+		});
+
+		console.log(JSON.stringify(locObj));
+		meetingLocations.push(locObj);
+
+		// at the end sort the locations by name 
+		if(i == locList.length - 1){
+			async.series([
+				alphaSortLocs(),
+				console.log(JSON.stringify(meetingLocations))
+			]);
+		}
+	}
+}
 
 
 function loadBroadcasters(){
@@ -310,14 +346,12 @@ io.on('connection', function (socket){
 
 		asyncTasks.push(function(callback){
 			// convert the meeting spots to JSON
-			for(var i =0; i < data.meetingSpots.length; i++){
+			for(var i =0; i < data.meetingSpots.length; i++){ 
 				meetingSpots.push(JSON.parse(data.meetingSpots[i]));
-
 				if(i == data.meetingSpots.length - 1){
 					callback();
 				}
 			}
-
 		});
 		
 
@@ -596,6 +630,15 @@ function timeSortTutors(tutors){
     	return a.startTime - b.startTime;
 	});
 }
+
+function alphaSortLocs(){
+	meetingLocations.sort(function(a,b){ 
+		var locA = a.name.toLowerCase();
+		var locB = b.name.toLowerCase();
+		return (locA < locB) ? -1 : (locA > locB) ? 1 : 0;
+    });
+}
+
 
 // returns a course by name 
 function findCourse(courseName){

@@ -260,7 +260,7 @@ function setFutureBroadcasters(){
 	// go through all the tutors and see which ones are future broadcasters
 	for(var i = 0; i < broadcastingTutors[ALL_COURSES].length; i++){
 		var tutor = broadcastingTutors[ALL_COURSES][i];
-		if(new Date().getTime() < this.tutorSession.startTime){
+		if(new Date().getTime() < tutor.tutorSession.startTime){
 			futureBroadcasters.push(tutor);
 			console.log("Future Broadcaster Added");
 		}
@@ -405,7 +405,7 @@ io.on('connection', function (socket){
 			currentUser.updateTutorSession(data.startTime, data.period, meetingSpots, data.price, data.lat, data.lon, function(tutor){
 
 				// check if future broadcast
-				if(new Date().getTime() < this.tutorSession.startTime){
+				if(new Date().getTime() < tutor.tutorSession.startTime){
 					futureBroadcasters.push(tutor);
 				}
 

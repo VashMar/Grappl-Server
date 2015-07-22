@@ -167,12 +167,21 @@ var broadcastingTutors = {};
 var grappledTutors = {}; 
 var allCourses = [];
 var meetingLocations = [];
-
+var futureBroadcasters = []; // track all the users are soon to be broadcasting 
+	
 broadcastingTutors[ALL_COURSES] = []; // makes sure we can track all the available tutors at once 
 
 
+// get the meeting spot locations 
 readLocs();
-loadBroadcasters();
+
+// load all the broadcasters then set the future broadcasters and run an interval check 
+async.series([
+	loadBroadcasters(),
+	setFutureBroadcasters(),
+	availabilityCheck()
+]);
+
 
 
 function readLocs(){
@@ -243,6 +252,33 @@ function loadBroadcasters(){
 
 		// }
 	});
+}
+
+
+
+function setFutureBroadcasters(){
+	// go through all the tutors and see which ones are future broadcasters
+	for(var i = 0; i < broadcastingTutors[ALL_COURSES].length; i++){
+		var tutor = broadcastingTutors[ALL_COURSES][i];
+		if(new Date().getTime() < this.tutorSession.startTime){
+			futureBroadcasters.push(tutor);
+			console.log("Future Broadcaster Added");
+		}
+	}
+}
+
+
+
+function availabilityCheck(){
+	setInterval(function() {
+		// check availbility of futureBroadcasters every minute
+		console.log("Checking Broadcaster Availability...");
+		for(var i = 0; i < futureBroadcasters.length; i++){
+			if(new Date().getTime() > futureBroadcasters[i].tutorSession.startTime){
+				console.log(futureBroadcasters[i].firstName + "is ready to Broadcast");
+			}
+		}
+	}, 60000);
 }
 
 
@@ -362,10 +398,16 @@ io.on('connection', function (socket){
 
 		
 		// stores latest session data and acknowledges 
-		function updateSession(){
+		function updateSession(){ 
+
+
 			// save the tutor broadcast settings 
 			currentUser.updateTutorSession(data.startTime, data.period, meetingSpots, data.price, data.lat, data.lon, function(tutor){
 
+				// check if future broadcast
+				if(new Date().getTime() < this.tutorSession.startTime){
+					futureBroadcasters.push(tutor);
+				}
 
 				socket.emit('sessionUpdated', {session: currentUser.getSessionData()});
 
@@ -410,7 +452,7 @@ io.on('connection', function (socket){
 	// removes a tutor from the availability pool for all their courses
 	socket.on('removeAvailable', function(data){
 		console.log(broadcastingTutors[ALL_COURSES].length + " in pool");
-		console.log("Removing a tutor...")
+		console.log("Removing a tutor...");
 
 		// remove tutor from pool of all 
 		removeTutor(broadcastingTutors[ALL_COURSES]);
@@ -584,9 +626,6 @@ io.on('connection', function (socket){
 
 		}
 	}
-
-
-
 
 });  // socket code ends 
 

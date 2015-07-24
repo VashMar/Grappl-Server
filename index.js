@@ -282,6 +282,7 @@ function availabilityCheck(){
 		for(var i = 0; i < futureBroadcasters.length; i++){
 			if(new Date().getTime() > futureBroadcasters[i].tutorSession.startTime){
 				console.log(futureBroadcasters[i].firstName + " is ready to Broadcast");
+				console.log("Notifying: " + futureBroadcasters[i].deviceID);
 				Pushbots.setMessage("You are now broadcasting" , 1);
 				Pushbots.pushOne(futureBroadcasters[i].deviceID, function(response){
 				    console.log(response);

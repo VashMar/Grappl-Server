@@ -18,6 +18,11 @@ var bodyParser = require('body-parser');
 var multer = require('multer'); 
 var async = require('async');
 var xlsx = require('node-xlsx'); // parses excel files 
+var pushbots = require('pushbots');
+var Pushbots = new pushbots.api({
+    id:'55b1994f177959f7648b4567',
+    secret:'d82fefd5afc386d42938cf3641863331'
+});
 
 
 
@@ -274,8 +279,8 @@ function availabilityCheck(){
 		// check availbility of futureBroadcasters every minute
 		console.log("Checking Broadcaster Availability...");
 		for(var i = 0; i < futureBroadcasters.length; i++){
-			if(new Date().getTime() > futureBroadcasters[i].tutorSession.startTime){
-				console.log(futureBroadcasters[i].firstName + "is ready to Broadcast");
+			if(new Date().getTime() > futureBroadcasters[i].tutorPushBSession.startTime){
+				console.log(futureBroadcasters[i].firstName + " is ready to Broadcast");
 			}
 		}
 	}, 60000);
@@ -333,6 +338,11 @@ io.on('connection', function (socket){
 			socket.join(currentUser.id);   // join room based on id 
 		}
 
+	});
+
+	// retrieves the id of connected users device 
+	socket.on('deviceID', function(data){
+		console.log(data);
 	});
  
 

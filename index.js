@@ -276,10 +276,12 @@ function setFutureBroadcasters(){
 // sets the interval at which to run an availability check for future broadcasters
 function availabilityInterval(pos){
 	if(futureBroadcasters.length > 0){
+		console.log("Starting Interval Check..");
 		// figure out how long from now latest broadcaster is scheduled 
 		var diff = futureBroadcasters[pos].tutorSession.startTime - new Date().getTime();
 		// run the check at that time, if the value is negative, we run the check now 
 		var interval = (diff > 0) ? diff : 0;  
+		console.log("Interval is: " + interval);
 		setTimeout(availabilityCheck, interval); 
 	}
 }

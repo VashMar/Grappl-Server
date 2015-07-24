@@ -268,6 +268,7 @@ function setFutureBroadcasters(){
 		if(new Date().getTime() < tutor.tutorSession.startTime){
 			futureBroadcasters.push(tutor);
 			console.log("Future Broadcaster Added");
+
 		}
 	}
 }
@@ -285,7 +286,8 @@ function availabilityCheck(){
 				console.log("Notifying: " + futureBroadcasters[i].deviceID);
 				Pushbots.setMessage("You are now broadcasting" , 1);
 				Pushbots.pushOne(futureBroadcasters[i].deviceID, function(response){
-				    console.log(response);
+				    console.log(response.code);
+				    futureBroadcasters.splice(i,1);  // removes tutor from list 
 				});
 			}
 		}

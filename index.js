@@ -280,7 +280,7 @@ function availabilityCheck(){
 		console.log(futureBroadcasters.length +  " in future pool");
 		console.log("Checking Broadcaster Availability...");
 		for(var i = 0; i < futureBroadcasters.length; i++){
-			if(new Date().getTime() > futureBroadcasters[i].tutorPushBSession.startTime){
+			if(new Date().getTime() > futureBroadcasters[i].tutorSession.startTime){
 				console.log(futureBroadcasters[i].firstName + " is ready to Broadcast");
 				Pushbots.setMessage("You are now broadcasting" , 1);
 				Pushbots.pushOne(futureBroadcasters[i].deviceID, function(response){
@@ -474,13 +474,16 @@ io.on('connection', function (socket){
 	});
 
 
-	// removes a tutor from the availability pool for all their courses
+	// removes a tutor from the availability pool for all their courses (triggered by user)
 	socket.on('removeAvailable', function(data){
 		console.log(broadcastingTutors[ALL_COURSES].length + " in pool");
 		console.log("Removing a tutor...");
 
 		// remove tutor from pool of all 
 		removeTutor(broadcastingTutors[ALL_COURSES]);
+
+		// remove from future broadcasting 
+		removeTutor(futureBroadcasters);
 
 		async.each(tutorCourses, function(course, callback){
 
@@ -617,13 +620,11 @@ io.on('connection', function (socket){
 
 
 
-
+	 // broadcasting removal triggered by disconnect  
 	function stopBroadcasting(){
 		// remove tutor from pool of all 
 		removeTutor(broadcastingTutors[ALL_COURSES]);
 
-		// remove from future broadcasting 
-		removeTutor(futureBroadcasters);
 
 		async.each(tutorCourses, function(course, callback){
 

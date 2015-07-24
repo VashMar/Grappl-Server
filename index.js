@@ -180,11 +180,12 @@ broadcastingTutors[ALL_COURSES] = []; // makes sure we can track all the availab
 // get the meeting spot locations 
 readLocs();
 
-// load all the broadcasters then set the future broadcasters and run an interval check 
+// load all the broadcasters then set the future broadcasters, sort them, and run an interval check 
 async.series([
 	loadBroadcasters(),
 	setFutureBroadcasters(),
-	availabilityCheck()
+	timeSortTutors(futureBroadcasters),
+	availabilityInterval(0);
 ]);
 
 
@@ -268,19 +269,28 @@ function setFutureBroadcasters(){
 		if(new Date().getTime() < tutor.tutorSession.startTime){
 			futureBroadcasters.push(tutor);
 			console.log("Future Broadcaster Added");
-
 		}
 	}
 }
 
 
+function availabilityInterval(pos){
+	if(futureBroadcasters.length > 0){
+		// figure out how long from now latest broadcaster is scheduled 
+		var diff = futureBroadcasters[pos].tutorSession.startTime - new Date().getTime();
+		// run the check at that time, if the value is negative, we run the check now 
+		var interval = (diff > 0) ? diff : 0;  
+		setTimeout(availabilityCheck, interval); 
+	}
+}
+
 
 function availabilityCheck(){
-	setInterval(function() {
 		// check availbility of futureBroadcasters every minute
 		console.log(futureBroadcasters.length +  " in future pool");
 		console.log("Checking Broadcaster Availability...");
 		for(var i = 0; i < futureBroadcasters.length; i++){
+			// if the current time is greater than broadcaster time, the tutor should be broadcasting, so notify them
 			if(new Date().getTime() > futureBroadcasters[i].tutorSession.startTime){
 				console.log(futureBroadcasters[i].firstName + " is ready to Broadcast");
 				console.log("Notifying: " + futureBroadcasters[i].deviceID);
@@ -290,8 +300,13 @@ function availabilityCheck(){
 				    futureBroadcasters.splice(i,1);  // removes tutor from list 
 				});
 			}
+
+			// the first tutor we run into that isn't ready to broadcast will the time diff of our new interval check 
+			if(new Date().getTime() < futureBroadcasters[i].tutorSession.startTime){
+				availabilityInterval(i);
+				return; 
+			}
 		}
-	}, 60000);
 }
 
 
@@ -431,10 +446,15 @@ io.on('connection', function (socket){
 			// save the tutor broadcast settings 
 			currentUser.updateTutorSession(data.startTime, data.period, meetingSpots, data.price, data.lat, data.lon, function(tutor){
 
-				// check if future broadcast
+				// check if future broadcast 
 				if(new Date().getTime() < tutor.tutorSession.startTime){
 					console.log("Adding future broadcaster..");
 					futureBroadcasters.push(tutor);
+					timeSortTutors(futureBroadcasters);
+					if(futureBroadcasters.length == 1){
+						// if it's the only tutor, kickstart the interval checking 
+						availabilityInterval(0);
+					}
 				}
 
 				socket.emit('sessionUpdated', {session: currentUser.getSessionData()});

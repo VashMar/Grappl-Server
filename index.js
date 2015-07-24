@@ -277,7 +277,7 @@ function setFutureBroadcasters(){
 function availabilityCheck(){
 	setInterval(function() {
 		// check availbility of futureBroadcasters every minute
-		console.log(futureBroadcasters.length " in future pool");
+		console.log(futureBroadcasters.length +  " in future pool");
 		console.log("Checking Broadcaster Availability...");
 		for(var i = 0; i < futureBroadcasters.length; i++){
 			if(new Date().getTime() > futureBroadcasters[i].tutorPushBSession.startTime){

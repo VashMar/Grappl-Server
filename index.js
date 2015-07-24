@@ -185,7 +185,7 @@ async.series([
 	loadBroadcasters(),
 	setFutureBroadcasters(),
 	timeSortTutors(futureBroadcasters),
-	availabilityInterval(0);
+	availabilityInterval(0)
 ]);
 
 
@@ -273,7 +273,7 @@ function setFutureBroadcasters(){
 	}
 }
 
-
+// sets the interval at which to run an availability check for future broadcasters
 function availabilityInterval(pos){
 	if(futureBroadcasters.length > 0){
 		// figure out how long from now latest broadcaster is scheduled 
@@ -285,6 +285,7 @@ function availabilityInterval(pos){
 }
 
 
+// checks if a future broadcaster has become available, notifying their phone if they have 
 function availabilityCheck(){
 		// check availbility of futureBroadcasters every minute
 		console.log(futureBroadcasters.length +  " in future pool");

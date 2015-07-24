@@ -46,7 +46,9 @@ var userSchema = new Schema({
 		}],
 		period: {type: Number, default: 45},	// availibility period in minutes 
 		startTime: {type: Number} // start date & time in ms 
-	}
+	},
+	
+	deviceID:{type:String}
 });
 
 

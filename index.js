@@ -281,6 +281,10 @@ function availabilityCheck(){
 		for(var i = 0; i < futureBroadcasters.length; i++){
 			if(new Date().getTime() > futureBroadcasters[i].tutorPushBSession.startTime){
 				console.log(futureBroadcasters[i].firstName + " is ready to Broadcast");
+				Pushbots.setMessage("You are now broadcasting" ,1);
+				Pushbots.pushOne(futureBroadcasters[i].deviceID, function(response){
+				    console.log(response);
+				});
 			}
 		}
 	}, 60000);
@@ -342,7 +346,16 @@ io.on('connection', function (socket){
 
 	// retrieves the id of connected users device 
 	socket.on('deviceID', function(data){
-		console.log(data);
+		console.log("Updating Device ID..");
+		currentUser.deviceID = data;
+		currentUser.save(function(err,user){
+			if(err){
+				console.log(err);
+			}else if(user){
+				console.log("User Device ID Updated.");
+				currentUser = user; 
+			}
+		});
 	});
  
 
@@ -606,6 +619,9 @@ io.on('connection', function (socket){
 	function stopBroadcasting(){
 		// remove tutor from pool of all 
 		removeTutor(broadcastingTutors[ALL_COURSES]);
+
+		// remove from future broadcasting 
+		removeTutor(futureBroadcasters);
 
 		async.each(tutorCourses, function(course, callback){
 

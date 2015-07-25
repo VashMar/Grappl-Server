@@ -294,6 +294,7 @@ function availabilityCheck(){
 		console.log("Checking Broadcaster Availability...");
 		for(var i = 0; i < futureBroadcasters.length; i++){
 			var bcaster = futureBroadcasters[i];
+			futureBroadcasters.splice(i,1);  // removes tutor from list 
 			// if the current time is greater than broadcaster time, the tutor should be broadcasting, so notify them
 			if(new Date().getTime() > bcaster.tutorSession.startTime){
 				console.log(bcaster.firstName + " is ready to Broadcast");
@@ -306,7 +307,6 @@ function availabilityCheck(){
 									});
 				Pushbots.pushOne(bcaster.deviceID, function(response){
 				    console.log(response.code);
-				    futureBroadcasters.splice(i,1);  // removes tutor from list 
 				   	console.log(futureBroadcasters.length +  " in future pool"); // see if splice worked
 				});
 			}

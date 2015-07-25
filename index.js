@@ -307,6 +307,7 @@ function availabilityCheck(){
 				Pushbots.pushOne(bcaster.deviceID, function(response){
 				    console.log(response.code);
 				    futureBroadcasters.splice(i,1);  // removes tutor from list 
+				   	console.log(futureBroadcasters.length +  " in future pool"); // see if splice worked
 				});
 			}
 
@@ -508,7 +509,7 @@ io.on('connection', function (socket){
 	// removes a tutor from the availability pool for all their courses (triggered by user)
 	socket.on('removeAvailable', function(data){
 		console.log(broadcastingTutors[ALL_COURSES].length + " in pool");
-		console.log("Removing a tutor...");
+		console.log("Triggered tutor removal initiated..");
 
 		// remove tutor from pool of all 
 		removeTutor(broadcastingTutors[ALL_COURSES]);

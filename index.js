@@ -298,6 +298,7 @@ function availabilityCheck(){
 				console.log(futureBroadcasters[i].firstName + " is ready to Broadcast");
 				console.log("Notifying: " + futureBroadcasters[i].deviceID);
 				Pushbots.setMessage("You are now broadcasting" , 1);
+				Pushbots.customFields({"nextActivity":"com.mamba.grapple.Waiting"});
 				Pushbots.pushOne(futureBroadcasters[i].deviceID, function(response){
 				    console.log(response.code);
 				    futureBroadcasters.splice(i,1);  // removes tutor from list 

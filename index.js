@@ -294,11 +294,11 @@ function availabilityCheck(){
 		console.log("Checking Broadcaster Availability...");
 		for(var i = 0; i < futureBroadcasters.length; i++){
 			var bcaster = futureBroadcasters[i];
-			futureBroadcasters.splice(i,1);  // removes tutor from list 
 			// if the current time is greater than broadcaster time, the tutor should be broadcasting, so notify them
 			if(new Date().getTime() > bcaster.tutorSession.startTime){
 				console.log(bcaster.firstName + " is ready to Broadcast");
 				console.log("Notifying: " + bcaster.deviceID);
+				futureBroadcasters.splice(i,1);  // removes tutor from list 
 				Pushbots.setMessage("You are now broadcasting" , 1);
 				Pushbots.customFields({"nextActivity":"com.mamba.grapple.Waiting",
 										"selectedCourses": bcaster.tutorSession.courses,

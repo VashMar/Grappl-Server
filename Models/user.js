@@ -211,9 +211,10 @@ userSchema.methods.setUnavailable = function(){
 }
 
 // adds session info and returns the tutor 
-userSchema.methods.updateTutorSession = function(startTime, period, meetingSpots, price, lat, lon, next){
+userSchema.methods.updateTutorSession = function(startTime, period, courses, meetingSpots, price, lat, lon, next){
 	console.log("Updating Session... " + meetingSpots );
 	console.log("period: " + period);
+	this.tutorSession.courses = courses; 
 	this.tutorSession.startTime = startTime;
 	this.tutorSession.period = period;
 	this.tutorSession.meetingSpots = meetingSpots;

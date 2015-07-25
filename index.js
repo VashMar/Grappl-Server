@@ -293,13 +293,18 @@ function availabilityCheck(){
 		console.log(futureBroadcasters.length +  " in future pool");
 		console.log("Checking Broadcaster Availability...");
 		for(var i = 0; i < futureBroadcasters.length; i++){
+			var bcaster = futureBroadcasters[i];
 			// if the current time is greater than broadcaster time, the tutor should be broadcasting, so notify them
-			if(new Date().getTime() > futureBroadcasters[i].tutorSession.startTime){
-				console.log(futureBroadcasters[i].firstName + " is ready to Broadcast");
-				console.log("Notifying: " + futureBroadcasters[i].deviceID);
+			if(new Date().getTime() > bcaster.tutorSession.startTime){
+				console.log(bcaster.firstName + " is ready to Broadcast");
+				console.log("Notifying: " + bcaster.deviceID);
 				Pushbots.setMessage("You are now broadcasting" , 1);
-				Pushbots.customFields({"nextActivity":"com.mamba.grapple.Waiting"});
-				Pushbots.pushOne(futureBroadcasters[i].deviceID, function(response){
+				Pushbots.customFields({"nextActivity":"com.mamba.grapple.Waiting",
+										"selectedCourses": bcaster.tutorSession.courses,
+										"meetingSpots": bcaster.tutorSession.meetingSpots,
+										"hrRate": bcaster.tutorSession.price
+									});
+				Pushbots.pushOne(bcaster.deviceID, function(response){
 				    console.log(response.code);
 				    futureBroadcasters.splice(i,1);  // removes tutor from list 
 				});
@@ -360,7 +365,7 @@ io.on('connection', function (socket){
 		if(user){
 			console.log("Found User: " + JSON.stringify(user));
 			currentUser = user; 
-			tutorCourses = currentUser.tutorCourses;
+			tutorCourses = currentUser.tutorSession.courses;
 			console.log("joining room: " + currentUser.id);
 			socket.join(currentUser.id);   // join room based on id 
 		}
@@ -414,7 +419,7 @@ io.on('connection', function (socket){
 	socket.on('setAvailable', function(data){
 		var meetingSpots = [];
 		var asyncTasks = [];
-		console.log(data.courses);
+
 		// do the current user reload and meeting spot parsing in parallel 
 		asyncTasks.push(function(callback){
 			User.reload(currentUser.id, function(user){
@@ -448,7 +453,7 @@ io.on('connection', function (socket){
 
 
 			// save the tutor broadcast settings 
-			currentUser.updateTutorSession(data.startTime, data.period, meetingSpots, data.price, data.lat, data.lon, function(tutor){
+			currentUser.updateTutorSession(data.startTime, data.period, data.courses, meetingSpots, data.price, data.lat, data.lon, function(tutor){
 
 				// check if future broadcast 
 				if(new Date().getTime() < tutor.tutorSession.startTime){
@@ -465,8 +470,7 @@ io.on('connection', function (socket){
 
 				currentUser = tutor; // update our version of currUser so it's same as DB 
 				tutorCourses = data.courses; // updates tutors current course list   
-				currentUser.tutorCourses = tutorCourses; 
-				currentUser.save();
+		
 
 				// add the tutor to the available list for all courses if they don't exist 
 				if(!tutorExists(broadcastingTutors[ALL_COURSES], currentUser)){

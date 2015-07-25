@@ -294,8 +294,8 @@ function availabilityCheck(){
 		console.log("Checking Broadcaster Availability...");
 		for(var i = 0; i < futureBroadcasters.length; i++){
 			var bcaster = futureBroadcasters[i];
-			// if the current time is greater than broadcaster time, the tutor should be broadcasting, so notify them
 			if(new Date().getTime() > bcaster.tutorSession.startTime){
+				// if the current time is greater than broadcaster time, the tutor should be broadcasting, so notify them
 				console.log(bcaster.firstName + " is ready to Broadcast");
 				console.log("Notifying: " + bcaster.deviceID);
 				futureBroadcasters.splice(i,1);  // removes tutor from list 
@@ -309,10 +309,8 @@ function availabilityCheck(){
 				    console.log(response.code);
 				   	console.log(futureBroadcasters.length +  " in future pool"); // see if splice worked
 				});
-			}
-
-			// the first tutor we run into that isn't ready to broadcast will the time diff of our new interval check 
-			if(new Date().getTime() < futureBroadcasters[i].tutorSession.startTime){
+			}else if(new Date().getTime() < futureBroadcasters[i].tutorSession.startTime){
+				// the first tutor we run into that isn't ready to broadcast will the time diff of our new interval check 
 				availabilityInterval(i);
 				return; 
 			}

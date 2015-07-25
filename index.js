@@ -300,7 +300,7 @@ function availabilityCheck(){
 				console.log("Notifying: " + bcaster.deviceID);
 				futureBroadcasters.splice(i,1);  // removes tutor from list 
 				Pushbots.setMessage("You are now broadcasting" , 1);
-				Pushbots.customFields({"nextActivity":"com.mamba.grapple.Waiting",
+				Pushbots.customFields({
 										"selectedCourses": bcaster.tutorSession.courses,
 										"meetingSpots": bcaster.tutorSession.meetingSpots,
 										"hrRate": bcaster.tutorSession.price

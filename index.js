@@ -414,7 +414,7 @@ io.on('connection', function (socket){
 	socket.on('setAvailable', function(data){
 		var meetingSpots = [];
 		var asyncTasks = [];
-
+		console.log(data.courses);
 		// do the current user reload and meeting spot parsing in parallel 
 		asyncTasks.push(function(callback){
 			User.reload(currentUser.id, function(user){

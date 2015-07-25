@@ -29,7 +29,6 @@ var userSchema = new Schema({
 	tutor: {type:Boolean},
 	approved: {type:Boolean, default: false},
 	studentCourses: [{type: ObjectId, ref: 'Course'}],
-	tutorCourses: [String],
 	studentSessionCount: {type: Number, default:0},
 	tutorSessionCount: {type: Number, default: 0},
 	messages: {type: ObjectId, ref: 'Message'},
@@ -45,9 +44,10 @@ var userSchema = new Schema({
 			lon: Number
 		}],
 		period: {type: Number, default: 45},	// availibility period in minutes 
-		startTime: {type: Number} // start date & time in ms 
+		startTime: {type: Number}, // start date & time in ms 
+		courses: [String]
 	},
-	
+
 	deviceID:{type:String}
 });
 

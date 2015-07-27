@@ -216,12 +216,6 @@ userSchema.methods.updateTutorSession = function(startTime, period, courses, mee
 	console.log("period: " + period);
 	this.tutorSession.courses = courses; 
 	this.tutorSession.startTime = startTime;
-	
-	if(this.tutorSession.startTime == 0){
-		// if the session starts now get current time
-		this.tutorSession.startTime = new Date().getTime();
-	}
-
 	this.tutorSession.period = period;
 	this.tutorSession.meetingSpots = meetingSpots;
 	this.tutorSession.price = price;

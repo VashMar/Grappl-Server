@@ -291,7 +291,6 @@ userSchema.methods.updateLocation = function(lat, lon, next){
 	this.location.lat = lat;
 	this.location.lon = lon; 
 	this.save();
-
 }
 
 userSchema.methods.updateStudentCourses = function(courses, next){

@@ -75,7 +75,7 @@ userSchema.pre('save', function(next){
 
 
 userSchema.virtual('name').get(function(){
-  return this.firstName ' ' + this.lastName;
+  return this.firstName + ' ' + this.lastName;
 });
 
 

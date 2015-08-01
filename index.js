@@ -449,8 +449,6 @@ io.on('connection', function (socket){
 		
 		// stores latest session data and acknowledges 
 		function updateSession(){ 
-
-
 			// save the tutor broadcast settings 
 			currentUser.updateTutorSession(data.startTime, data.period, data.courses, meetingSpots, data.price, data.lat, data.lon, function(tutor){
 
@@ -466,7 +464,6 @@ io.on('connection', function (socket){
 				}
 
 				socket.emit('sessionUpdated', {session: currentUser.getSessionData()});
-
 				currentUser = tutor; // update our version of currUser so it's same as DB 
 				tutorCourses = data.courses; // updates tutors current course list   
 		
@@ -594,6 +591,8 @@ io.on('connection', function (socket){
 	});
 
 	socket.on('endSession', function(data){
+		console.log(currentUser.name + " ended session");
+		console.log("Notifying " + connectedUser.name);
 		io.to(connectedUser).emit('sessionEnded', {time: data.time});
 	})
 	;

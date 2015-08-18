@@ -183,10 +183,9 @@ readLocs();
 // load all the broadcasters then set the future broadcasters, sort them, and run an interval check 
 async.series([
 	loadBroadcasters(),
-	wipeBroadcasters()
-	// setFutureBroadcasters(),
-	// timeSortTutors(futureBroadcasters),
-	// availabilityInterval(0)
+	setFutureBroadcasters(),
+	timeSortTutors(futureBroadcasters),
+	availabilityInterval(0)
 ]);
 
 

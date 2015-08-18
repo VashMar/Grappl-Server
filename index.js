@@ -180,6 +180,8 @@ broadcastingTutors[ALL_COURSES] = []; // makes sure we can track all the availab
 // get the meeting spot locations 
 readLocs();
 
+wipeBroadcasters();
+
 // load all the broadcasters then set the future broadcasters, sort them, and run an interval check 
 async.series([
 	loadBroadcasters(),
@@ -355,7 +357,7 @@ io.on('connection', function (socket){
 	var serverSessionTime;		// tracks session from server side 
  
 	// retrieve the user object for this socket connection 
-	User.findOne({_id: socket.decoded_token}, function(err, user){
+	User.findOne({_id: socket.decoded_token}, function(err, user){ 
 
 		if(err){
 			console.log(err);
@@ -601,7 +603,7 @@ io.on('connection', function (socket){
 	socket.on('sessionComplete', function(){
 		inSession = false; 
 		connectedUser = null; 
-	});
+	}); 
 
 
 	// updates connected user on distance from meeting point (param is distance from meeting point in miles)

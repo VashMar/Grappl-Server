@@ -180,14 +180,13 @@ broadcastingTutors[ALL_COURSES] = []; // makes sure we can track all the availab
 // get the meeting spot locations 
 readLocs();
 
-wipeBroadcasters();
-
 // load all the broadcasters then set the future broadcasters, sort them, and run an interval check 
 async.series([
 	loadBroadcasters(),
-	setFutureBroadcasters(),
-	timeSortTutors(futureBroadcasters),
-	availabilityInterval(0)
+	wipeBroadcasters()
+	// setFutureBroadcasters(),
+	// timeSortTutors(futureBroadcasters),
+	// availabilityInterval(0)
 ]);
 
 

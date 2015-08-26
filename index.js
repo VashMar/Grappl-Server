@@ -433,7 +433,7 @@ io.on('connection', function (socket){
 		asyncTasks.push(function(callback){
 			// convert the meeting spots to JSON
 			for(var i =0; i < data.meetingSpots.length; i++){ 
-				console.log("meetingspots: " + data.meetingSpots);
+				console.log("meetingspots: " + JSON.stringify(data.meetingSpots));
 				meetingSpots.push(JSON.parse(data.meetingSpots[i]));
 				if(i == data.meetingSpots.length - 1){
 					callback();

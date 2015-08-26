@@ -434,7 +434,10 @@ io.on('connection', function (socket){
 			// convert the meeting spots to JSON
 			for(var i =0; i < data.meetingSpots.length; i++){ 
 				console.log("meetingspots: " + JSON.stringify(data.meetingSpots));
-				meetingSpots.push(JSON.parse(data.meetingSpots[i]));
+				if(typeof data.meetingSpots[i] != 'object'){
+					meetingSpots.push(JSON.parse(data.meetingSpots[i]));
+				}
+				
 				if(i == data.meetingSpots.length - 1){
 					callback();
 				}

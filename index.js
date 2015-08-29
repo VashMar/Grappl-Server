@@ -436,6 +436,8 @@ io.on('connection', function (socket){
 				console.log("meetingspots: " + JSON.stringify(data.meetingSpots));
 				if(typeof data.meetingSpots[i] != 'object'){
 					meetingSpots.push(JSON.parse(data.meetingSpots[i]));
+				}else{
+					meetingSpots.push(data.meetingSpots[i]);
 				}
 				
 				if(i == data.meetingSpots.length - 1){

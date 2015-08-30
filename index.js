@@ -299,14 +299,14 @@ function availabilityCheck(){
 				console.log(bcaster.firstName + " is ready to Broadcast");
 				console.log("Notifying: " + bcaster.deviceID);
 				futureBroadcasters.splice(i,1);  // removes tutor from list 
-				Pushbots.setMessage("You are now broadcasting" , 1);
+				Pushbots.setMessage("You are now broadcasting" , bcaster.platform);
 				Pushbots.customFields({ "nextActivity": "com.mamba.grapple.Main",
 										"selectedCourses": bcaster.tutorSession.courses,
 										"meetingSpots": bcaster.tutorSession.meetingSpots,
 										"hrRate": bcaster.tutorSession.price
 									});
 				Pushbots.pushOne(bcaster.deviceID, function(response){
-				    console.log(response.code);
+					console.log(response);
 				   	console.log(futureBroadcasters.length +  " in future pool"); // see if splice worked
 				});
 			}else if(new Date().getTime() < futureBroadcasters[i].tutorSession.startTime){
@@ -374,7 +374,8 @@ io.on('connection', function (socket){
 	// retrieves the id of connected users device 
 	socket.on('deviceID', function(data){
 		console.log("Updating Device ID..");
-		currentUser.deviceID = data;
+		currentUser.deviceID = data.deviceID;
+		currentUser.platform = data.platform; 
 		currentUser.save(function(err,user){
 			if(err){
 				console.log(err);

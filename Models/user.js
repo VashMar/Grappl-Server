@@ -48,7 +48,8 @@ var userSchema = new Schema({
 		courses: [String]
 	},
 
-	deviceID:{type:String}
+	deviceID:{type:String},
+	platform: Number 
 });
 
 
@@ -263,7 +264,7 @@ userSchema.methods.updateTutorRating = function(rating){
 	console.log("Tutor sessions incremented to: " + this.tutorSessionCount);
 	console.log("Current rating: " + this.tutorRating);
 	console.log("Latest rating: " + rating);
-	this.tutorRating =  (this.tutorRating * (this.tutorSessionCount - 1) + rating)/this.tutorSessionCount; 
+	this.tutorRating = (this.tutorRating * (this.tutorSessionCount - 1) + rating)/this.tutorSessionCount; 
 	console.log("Updated Rating: " + this.tutorRating);
 	this.save(function(err, user){
 		console.log("Updating tutor rating..");
@@ -287,7 +288,7 @@ userSchema.methods.updateProfilePic = function(ref, next){
 		if(user){
 			next(user);
 		}
-	})
+	});
 
 }
 

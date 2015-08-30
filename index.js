@@ -373,7 +373,7 @@ io.on('connection', function (socket){
 
 	// retrieves the id of connected users device 
 	socket.on('deviceID', function(data){
-		console.log("Updating Device ID..");
+		console.log("Updating Device ID.." + data.deviceID);
 		currentUser.deviceID = data.deviceID;
 		currentUser.platform = data.platform; 
 		currentUser.save(function(err,user){

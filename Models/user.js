@@ -215,6 +215,31 @@ userSchema.methods.setUnavailable = function(){
 
 }
 
+//sets the tutor as broadcasting 
+userSchema.methods.setBroadcasting = function(){
+	this.tutorsession.broadcasting = true;
+	this.save();
+}
+
+// ends tutors broadcast 
+userSchema.methods.endBroadcasting = function(){
+	this.tutorSession.broadcasting = false; 
+	this.save();
+}
+
+userSchema.methods.getCourses = function(){
+	return this.tutorSession.courses;
+}
+
+
+userSchema.methods.isAvailable = function(){
+	return this.tutorSession.available;
+}
+
+userSchema.methods.isBroadcasting = function(){
+	return this.tutorSession.broadcasting;
+}
+
 // adds session info and returns the tutor 
 userSchema.methods.updateTutorSession = function(startTime, period, courses, meetingSpots, price, lat, lon, next){
 	console.log("Updating Session... " + meetingSpots );

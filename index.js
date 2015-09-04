@@ -367,6 +367,14 @@ io.on('connection', function (socket){
 			tutorCourses = currentUser.tutorSession.courses;
 			console.log("joining room: " + currentUser.id);
 			socket.join(currentUser.id);   // join room based on id 
+
+			// handle broadcasting reconnect 
+			if(currentUser.isAvailable() && !currentUser.isBroadcasting()){
+				// readd to pool 
+				addToPool();
+		
+
+			}
 		}
 
 	});
@@ -472,36 +480,42 @@ io.on('connection', function (socket){
 
 				socket.emit('sessionUpdated', {session: currentUser.getSessionData()});
 				currentUser = tutor; // update our version of currUser so it's same as DB 
-				tutorCourses = data.courses; // updates tutors current course list   
+
+				// add the user to the currently broadcasting pool	
+				addToPool();
+
+
+				// currentUser.setBroadcasting(); // turn broadcasting on 
+				// tutorCourses = data.courses; // updates tutors current course list   
 		
 
-				// add the tutor to the available list for all courses if they don't exist 
-				if(!tutorExists(broadcastingTutors[ALL_COURSES], currentUser)){
-					broadcastingTutors[ALL_COURSES].push(currentUser);	
-				}
+				// // add the tutor to the available list for all courses if they don't exist 
+				// if(!tutorExists(broadcastingTutors[ALL_COURSES], currentUser)){
+				// 	broadcastingTutors[ALL_COURSES].push(currentUser);	
+				// }
 
-				// add the tutor to the available list for appropriate courses 
-				for(var i = 0; i < tutorCourses.length; i++){
+				// // add the tutor to the available list for appropriate courses 
+				// for(var i = 0; i < tutorCourses.length; i++){
 
-					var tutors = broadcastingTutors[tutorCourses[i]];
+				// 	var tutors = broadcastingTutors[tutorCourses[i]];
 					
 
-					if(!tutorExists(tutors, currentUser)){
-						tutors.push(currentUser);
-						console.log(currentUser.firstName +  " added to course " + tutorCourses[i]);
+				// 	if(!tutorExists(tutors, currentUser)){
+				// 		tutors.push(currentUser);
+				// 		console.log(currentUser.firstName +  " added to course " + tutorCourses[i]);
 
-						// store to db 
-						var course = findCourse(tutorCourses[i]);
-						if(course){
-							course.save(function(err){
-								if(err){
-									console.log(err);
-								}
-							});
-						}
+				// 		// store to db 
+				// 		var course = findCourse(tutorCourses[i]);
+				// 		if(course){
+				// 			course.save(function(err){
+				// 				if(err){
+				// 					console.log(err);
+				// 				}
+				// 			});
+				// 		}
 
-					}
-				}
+				// 	}
+				// }
 
 			});		 
 		}
@@ -684,11 +698,45 @@ io.on('connection', function (socket){
 		function removeTutor(tutors){
 			for(var i =0; i < tutors.length; i++){
 				if(tutors[i].id == currentUser.id){
-					tutors[i].setUnavailable();
+					tutors[i].endBroadcasting();
 					tutors.splice(i,1);  // removes tutor from list 
 				}
 			}
 
+		}
+	}
+
+	// adds user to current broadcasting pool 
+	function addToPool(){
+		currentUser.setBroadcasting(); // turn broadcasting on 
+		tutorCourses = currentUser.getCourses(); // updates tutors current course list   
+
+		// add the tutor to the available list for all courses if they don't exist 
+		if(!tutorExists(broadcastingTutors[ALL_COURSES], currentUser)){
+			broadcastingTutors[ALL_COURSES].push(currentUser);	
+		}
+
+		// add the tutor to the available list for appropriate courses 
+		for(var i = 0; i < tutorCourses.length; i++){
+
+			var tutors = broadcastingTutors[tutorCourses[i]];
+			
+
+			if(!tutorExists(tutors, currentUser)){
+				tutors.push(currentUser);
+				console.log(currentUser.firstName +  " added to course " + tutorCourses[i]);
+
+				// store to db 
+				var course = findCourse(tutorCourses[i]);
+				if(course){
+					course.save(function(err){
+						if(err){
+							console.log(err);
+						}
+					});
+				}
+
+			}
 		}
 	}
 

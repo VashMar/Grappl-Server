@@ -217,7 +217,7 @@ userSchema.methods.setUnavailable = function(){
 
 //sets the tutor as broadcasting 
 userSchema.methods.setBroadcasting = function(){
-	this.tutorsession.broadcasting = true;
+	this.tutorSession.broadcasting = true;
 	this.save();
 }
 

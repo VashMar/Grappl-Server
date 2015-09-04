@@ -708,6 +708,7 @@ io.on('connection', function (socket){
 
 	// adds user to current broadcasting pool 
 	function addToPool(){
+		console.log("Adding to pool");
 		currentUser.setBroadcasting(); // turn broadcasting on 
 		tutorCourses = currentUser.getCourses(); // updates tutors current course list   
 

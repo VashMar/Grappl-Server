@@ -28,7 +28,7 @@ var Pushbots = new pushbots.api({
 var braintree = require("braintree");
 
 var gateway = braintree.connect({
-	environment: braintree.environment.Sandbox,
+	environment: braintree.Environment.Sandbox,
 	merchantId: "8b7bhx9h3psvyys7",
 	publicKey: "8yhyn4z7zmvrknfm",
 	privateKey: "7480aa7f777124573f0f28ed11e8ec6a"

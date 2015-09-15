@@ -29,7 +29,7 @@ var braintree = require("braintree");
 
 var gateway = braintree.connect({
 	environment: braintree.environment.Sandbox,
-	merchantId: "8b7bhx9h3psvyys7".
+	merchantId: "8b7bhx9h3psvyys7",
 	publicKey: "8yhyn4z7zmvrknfm",
 	privateKey: "7480aa7f777124573f0f28ed11e8ec6a"
 });
@@ -171,7 +171,10 @@ app.get('/locations', function(req, res){
 	res.json(meetingLocations);
 });
 
+//client token for braintree 
+app.get("/client_token", function (req, res) {
 
+});
 
 
 /******************************************************************** On Start Up *********************************************************************************/
@@ -355,6 +358,12 @@ io.use(socketioJwt.authorize({
 
 io.on('connection', function (socket){
 	console.log("Socket Connected! " + socket.decoded_token);
+
+	gateway.clientToken.generate({}, function (err, response) {
+		console.log("Sending braintree token: " + response.clientToken);
+  		socket.emit("paymentToken", response.clientToken)
+  	});
+
 
 	var currentUser;				// tracks the user on this socket 
 	var socketID = socket.id;		// id of this socket 

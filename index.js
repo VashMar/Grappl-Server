@@ -391,8 +391,6 @@ io.on('connection', function (socket){
 			if(currentUser.isAvailable() && !currentUser.isBroadcasting()){
 				// readd to pool 
 				addToPool();
-		
-
 			}
 		}
 
@@ -502,39 +500,6 @@ io.on('connection', function (socket){
 
 				// add the user to the currently broadcasting pool	
 				addToPool();
-
-
-				// currentUser.setBroadcasting(); // turn broadcasting on 
-				// tutorCourses = data.courses; // updates tutors current course list   
-		
-
-				// // add the tutor to the available list for all courses if they don't exist 
-				// if(!tutorExists(broadcastingTutors[ALL_COURSES], currentUser)){
-				// 	broadcastingTutors[ALL_COURSES].push(currentUser);	
-				// }
-
-				// // add the tutor to the available list for appropriate courses 
-				// for(var i = 0; i < tutorCourses.length; i++){
-
-				// 	var tutors = broadcastingTutors[tutorCourses[i]];
-					
-
-				// 	if(!tutorExists(tutors, currentUser)){
-				// 		tutors.push(currentUser);
-				// 		console.log(currentUser.firstName +  " added to course " + tutorCourses[i]);
-
-				// 		// store to db 
-				// 		var course = findCourse(tutorCourses[i]);
-				// 		if(course){
-				// 			course.save(function(err){
-				// 				if(err){
-				// 					console.log(err);
-				// 				}
-				// 			});
-				// 		}
-
-				// 	}
-				// }
 
 			});		 
 		}

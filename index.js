@@ -396,6 +396,43 @@ io.on('connection', function (socket){
 
 	});
 
+	// Adds a payment option for the user 
+	socket.on('addPayment', function(data){
+		gateway.customer.find(currentUser.customerID, function(err, customer){
+			if(err){
+				console.log(err);
+			}else if(customer){
+				gateway.customer.update(currentUser.customerID, {
+					paymentMethodNonce: data.paymentNonce 
+				}, function(err, result){
+					if(err){
+						console.log(err);
+					}
+					console.log(result);
+				});
+
+			}else{
+				// if the customer doesn't exist, create them 
+				gateway.customer.create({
+					firstName: currentUser.firstName,
+					lastName: currentUser.lastName,
+					paymentMethodNonce: data.paymentNonce
+				}, function(err, result){
+					if(err){
+						console.log(err);
+					}else{
+						console.log(result);
+						if(result.success){
+							currentUser.customerID = result.customer.id;
+							currentUser.save();
+						}
+					}
+				});
+			}
+
+		})
+	});
+
 	// retrieves the id of connected users device 
 	socket.on('deviceID', function(data){
 		console.log("Updating Device ID.." + data.deviceID);

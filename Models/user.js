@@ -49,7 +49,12 @@ var userSchema = new Schema({
 	},
 
 	deviceID:{type:String},
-	platform: Number 
+	platform: Number,
+	customerID: {type:String},
+	promo: {
+		code: String,
+		used: {type:Boolean, default: false}
+	}
 });
 
 
@@ -101,6 +106,12 @@ userSchema.statics.create = function(first, last, email, password, next){
 			next(err);
 		}else if(user){
 			next("", user);
+			require('crypto').randomBytes(6, function(ex, buf){
+			  var token = buf.toString('hex');
+			  console.log("Promo code:" + token);
+			  user.promo.code = token;
+			  user.save();
+			});
 		}
 	});
 }
